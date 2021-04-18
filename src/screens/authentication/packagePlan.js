@@ -273,7 +273,7 @@ class PackagePlan extends Component {
                     marginRight: 10,
                     marginTop: 15,
                   }}>
-                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('Tab Menu')}>
+                  <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Tab Menu'),this.setState({paymentMethod:false})}}>
                     <View style={{flexDirection: 'row'}}>
                       <Icon
                         name="paypal"
@@ -283,7 +283,7 @@ class PackagePlan extends Component {
                       <Text style={Styles1.subText4}>Paypal</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('Tab Menu')}>
+                  <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Tab Menu'),this.setState({paymentMethod:false})}}>
                     <View style={{flexDirection: 'row'}}>
                       <Icon1
                         name="stripe"

@@ -9,14 +9,11 @@ import {
   Dimensions,
   TouchableOpacity,
   PermissionsAndroid,
+  Modal,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel,
-} from 'react-native-simple-radio-button';
 
 import Styles from '../../styles/Styles';
 import Styles1 from '../../styles/BarberDetailsFormStyles';
@@ -35,72 +32,118 @@ class Account extends Component {
     super(props);
     this.state = {
       fileUri: '',
+      selectAvatarType: false
     };
   }
 
-  chooseImage = () => {
-    let options = {
-      title: 'Select Image',
-      customButtons: [
-        {name: 'customOptionKey', title: 'Choose Photo from Custom Option'},
-      ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
+  chooseImage = async () => {
+    this.setState({
+      selectAvatarType:false,
+    })
+    
+    let granted = ''; 
+    let granted1 = '';
     //permission
-    const requestCameraPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          [
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          ],
-          {
-            title: 'Barber App Camera & Storage Permission',
-            message:
-              'Barber App needs access to your camera ' +
-              'so you can select avatar',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can use the camera');
-        } else {
-          console.log('Camera permission denied');
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    };
+    try {
+       granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
 
-    launchCamera('options', response => {
-      console.log('Response = ', response);
+        {
+          title: 'Barber App Camera & Storage Permission',
+          message:
+            'Barber App needs access to your camera ' +
+            'so you can select avatar',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      granted1 = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        const source = {uri: response.uri};
+        {
+          title: 'Barber App Storage Permission',
+          message:
+            'Barber App needs access to your storage ' +
+            'so you can select avatar',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+    } catch (err) {
+      console.warn(err);
+    }
 
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-        // alert(JSON.stringify(response));
-
-        console.log('response', JSON.stringify(response));
+    if (granted && granted1 === PermissionsAndroid.RESULTS.GRANTED) {
+      
+      ImagePicker.openCamera({
+        width: 300,
+        height: 400,
+        // cropping: true,
+        // multiple:true,
+        includeBase64: true
+      }).then(image => {
+        console.log(image);
         this.setState({
-          fileUri: response,
+          fileUri: image,
         });
-      }
-    });
+      });
+    }
+  };
+
+  chooseGallery = async () => {
+    this.setState({
+      selectAvatarType:false,
+    })
+    let granted = ''; 
+    let granted1 = '';
+    //permission
+    try {
+       granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+
+        {
+          title: 'Barber App Camera & Storage Permission',
+          message:
+            'Barber App needs access to your camera ' +
+            'so you can select avatar',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      granted1 = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+
+        {
+          title: 'Barber App Storage Permission',
+          message:
+            'Barber App needs access to your storage ' +
+            'so you can select avatar',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+    } catch (err) {
+      console.warn(err);
+    }
+
+    if (granted && granted1 === PermissionsAndroid.RESULTS.GRANTED) {
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        // cropping: true,
+        // multiple:true,
+        includeBase64: true
+      }).then(image => {
+        console.log(image);
+        this.setState({
+          fileUri: image,
+        });
+      });
+    }
   };
 
   render() {
@@ -133,7 +176,7 @@ class Account extends Component {
 
           <View
             style={{justifyContent: 'center', marginBottom: 10, marginTop: 12}}>
-            <TouchableOpacity onPress={this.chooseImage}>
+            <TouchableOpacity onPress={()=>this.setState({selectAvatarType:true})}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -142,7 +185,8 @@ class Account extends Component {
                 }}>
                 {this.state.fileUri != '' ? (
                   <Image
-                    source={{uri: this.state.fileUri.uri}}
+                    // source={{uri: this.state.fileUri.uri}}
+                    source = {{uri: `data:${this.state.fileUri.mime};base64,${this.state.fileUri.data}`}}
                     style={{width: 50, height: 50, borderRadius: 25}}></Image>
                 ) : (
                   <View
@@ -273,6 +317,93 @@ class Account extends Component {
               <Text style={Styles2.subText1}>Login</Text>
             </TouchableOpacity>
           </View>
+          <Modal visible={this.state.selectAvatarType} transparent={true}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 22,
+              }}>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 10,
+                  marginRight: 10,
+                  backgroundColor: Color.darkgray,
+                  borderColor: Color.golden,
+                  borderWidth: 2,
+                  borderRadius: 15,
+                  padding: 20,
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5,
+                  width: '80%',
+                }}>
+                <Text style={Styles.headerText1}>Select Avatar Type</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginLeft: 10,
+                    marginRight: 10,
+                    marginTop: 15,
+                  }}>
+                  <TouchableOpacity onPress={()=>this.chooseImage()}>
+                    <View style={{flexDirection: 'row'}}>
+                      <Icon
+                        name="paypal"
+                        color="#001f6b"
+                        size={22}
+                        style={{marginLeft: 10}}></Icon>
+                      <Text style={Styles1.subText4}>Launch Camera</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>this.chooseGallery()}>
+                    <View style={{flexDirection: 'row'}}>
+                      <Icon1
+                        name="stripe"
+                        color="#6772e5"
+                        size={22}
+                        style={{marginLeft: 10}}></Icon1>
+                      <Text style={Styles1.subText4}>Gallery</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'flex-end',
+                    marginTop: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => this.setState({paymentMethod: false})}>
+                    <View
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        backgroundColor: Color.golden,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Icon2
+                        name="arrow-left"
+                        color={Color.whiteColor}
+                        size={24}></Icon2>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        
         </ImageBackground>
       </View>
     );
