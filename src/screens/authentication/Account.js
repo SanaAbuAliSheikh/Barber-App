@@ -11,9 +11,7 @@ import {
   PermissionsAndroid,
   Modal,
 } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-
 
 import Styles from '../../styles/Styles';
 import Styles1 from '../../styles/BarberDetailsFormStyles';
@@ -24,7 +22,10 @@ import Color from '../../utils/Colors.json';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
-import Icon3 from 'react-native-vector-icons/Ionicons';
+import Icon3 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/Fontisto';
+
+import Header from '../components/Header';
 
 const {width, height} = Dimensions.get('window');
 class Account extends Component {
@@ -32,20 +33,25 @@ class Account extends Component {
     super(props);
     this.state = {
       fileUri: '',
-      selectAvatarType: false
+      name: '',
+      email: '',
+      password: '',
+      encryptedPass : false,
+      error: '',
+      selectAvatarType: false,
     };
   }
 
   chooseImage = async () => {
     this.setState({
-      selectAvatarType:false,
-    })
-    
-    let granted = ''; 
+      selectAvatarType: false,
+    });
+
+    let granted = '';
     let granted1 = '';
     //permission
     try {
-       granted = await PermissionsAndroid.request(
+      granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
 
         {
@@ -76,13 +82,12 @@ class Account extends Component {
     }
 
     if (granted && granted1 === PermissionsAndroid.RESULTS.GRANTED) {
-      
       ImagePicker.openCamera({
         width: 300,
         height: 400,
         // cropping: true,
         // multiple:true,
-        includeBase64: true
+        includeBase64: true,
       }).then(image => {
         console.log(image);
         this.setState({
@@ -94,13 +99,13 @@ class Account extends Component {
 
   chooseGallery = async () => {
     this.setState({
-      selectAvatarType:false,
-    })
-    let granted = ''; 
+      selectAvatarType: false,
+    });
+    let granted = '';
     let granted1 = '';
     //permission
     try {
-       granted = await PermissionsAndroid.request(
+      granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
 
         {
@@ -136,7 +141,7 @@ class Account extends Component {
         height: 400,
         // cropping: true,
         // multiple:true,
-        includeBase64: true
+        includeBase64: true,
       }).then(image => {
         console.log(image);
         this.setState({
@@ -146,37 +151,59 @@ class Account extends Component {
     }
   };
 
+  validation = () => {
+    const {fileUri ,name, email, password} = this.state;
+    if(fileUri==''){
+      this.setState({
+        error:'Missing Avatar'
+      })
+      return false;
+    }
+    if(name==''){
+      this.setState({
+        error:'Missing Parameter Name'
+      })
+      return false;
+    }
+    if(email==''){
+      this.setState({
+        error:'Missing Parameter Email'
+      })
+      return false;
+    }
+    if(password==''){
+      this.setState({
+        error:'Missing Parameter Password'
+      })
+      return false;
+    }
+    return true;
+  }
+
+  onSubmit = async() => {
+    // if(this.validation()){
+    //   this.props.navigation.navigate('Category');
+    // }
+    this.props.navigation.navigate('Category');
+  }
+
   render() {
     return (
       <View style={Styles.background}>
-        <ImageBackground
-          source={require('../../assets/images/login/login.png')}
-          style={{width: width, height: height}}>
-          <View
-            style={{
-              alignItems: 'center',
-              marginTop: 20,
-            }}>
-            <View
-              style={{
-                width: '90%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={require('../../assets/images/logo.png')}
-                style={{width: 80, height: 98}}></Image>
-              <Text style={Styles1.headerText}>Owner's Info</Text>
-              <Text style={Styles2.subText}>
-                Please enter your personal information to Sign Up on the
-                platform.
-              </Text>
-            </View>
-          </View>
-
+        <Header
+          type={2}
+          name="SIGN UP"
+          subname="Please enter your personal information to Login on the platform."
+          heading={true}
+          image={true}
+          subheading={true}
+        />
+        {/* <Text style={Styles1.error}>{this.state.error}</Text> */}
+        <ScrollView>
           <View
             style={{justifyContent: 'center', marginBottom: 10, marginTop: 12}}>
-            <TouchableOpacity onPress={()=>this.setState({selectAvatarType:true})}>
+            <TouchableOpacity
+              onPress={() => this.setState({selectAvatarType: true})}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -186,7 +213,9 @@ class Account extends Component {
                 {this.state.fileUri != '' ? (
                   <Image
                     // source={{uri: this.state.fileUri.uri}}
-                    source = {{uri: `data:${this.state.fileUri.mime};base64,${this.state.fileUri.data}`}}
+                    source={{
+                      uri: `data:${this.state.fileUri.mime};base64,${this.state.fileUri.data}`,
+                    }}
                     style={{width: 50, height: 50, borderRadius: 25}}></Image>
                 ) : (
                   <View
@@ -213,6 +242,8 @@ class Account extends Component {
               <TextInput
                 placeholder="Enter Name"
                 placeholderTextColor={Color.whiteColor}
+                value={this.state.name}
+                onChangeText={(text)=>this.setState({name:text})}
                 style={Styles1.TextInputStyle}></TextInput>
             </View>
             <View style={{flexDirection: 'row', margin: 20}}>
@@ -224,187 +255,149 @@ class Account extends Component {
               <TextInput
                 placeholder="Enter Email"
                 placeholderTextColor={Color.whiteColor}
+                value={this.state.email}
+                onChangeText={(text)=>this.setState({email:text})}
                 style={Styles1.TextInputStyle}></TextInput>
             </View>
 
-            <View style={{flexDirection: 'row', margin: 20}}>
-              <Icon2
-                name="lock"
+            <View style={{flexDirection: 'row', margin: 20, marginRight:0}}>
+              <Icon4
+                name="locked"
                 color={Color.golden}
                 size={25}
-                style={{marginTop: 22}}></Icon2>
+                style={{marginTop: 22}}></Icon4>
               <TextInput
                 placeholder="Enter Password"
                 placeholderTextColor={Color.whiteColor}
+                value={this.state.password}
+                onChangeText={(text)=>this.setState({password:text})}
+                secureTextEntry={this.state.encryptedPass}
                 style={Styles1.TextInputStyle}></TextInput>
+              <TouchableOpacity onPress={()=>this.setState({encryptedPass:!this.state.encryptedPass})}>
+                <Icon2
+                name={this.state.encryptedPass?"eye-with-line":"eye"}
+                color={Color.golden}
+                size={25}
+                style={{marginTop: 18,right:10}}></Icon2>
+                </TouchableOpacity>
             </View>
           </View>
+        </ScrollView>
 
-          {/* <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-            <TouchableOpacity style={{marginRight: 116, marginTop: 15}}>
-              <View
-                style={{
-                  backgroundColor: Color.darkgray,
-                  borderRadius: 20,
-                  width: 40,
-                  height: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Icon1 name="arrow-back" color={Color.golden} size={25}></Icon1>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  backgroundColor: Color.primaryColor,
-                  borderColor: 'black',
-                  borderWidth: 3,
-                  borderRadius: 35,
-                  width: 70,
-                  height: 70,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Icon2 name="plus" color={Color.golden} size={30}></Icon2>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{marginLeft: 116, marginTop: 15}}>
-              <View
-                style={{
-                  backgroundColor: Color.darkgray,
-                  borderRadius: 20,
-                  width: 40,
-                  height: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Icon1
-                  name="arrow-forward"
-                  color={Color.golden}
-                  size={25}></Icon1>
-              </View>
-            </TouchableOpacity>
-          </View> */}
-
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Shop Info')}>
-            <View
-              style={{
-                backgroundColor: '#89683d',
-                borderColor: 'black',
-                borderWidth: 2,
-                borderRadius: 30,
-                marginLeft: 90,
-                marginRight: 90,
-                marginTop: 20,
-              }}>
-              <Text style={Styles1.subText1}>Next</Text>
-            </View>
-          </TouchableOpacity>
-
+        <TouchableOpacity
+          onPress={this.onSubmit}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
+              backgroundColor: Color.primaryColor,
+              borderColor: Color.golden,
+              borderWidth: 1,
+              borderRadius: 30,
+              marginLeft: 90,
+              marginRight: 90,
               marginTop: 20,
-              marginBottom: 30,
             }}>
-            <Text style={Styles2.subText}>Already have an account? </Text>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Login')}>
-              <Text style={Styles2.subText1}>Login</Text>
-            </TouchableOpacity>
+            <Text style={Styles1.subText1}>Next</Text>
           </View>
-          <Modal visible={this.state.selectAvatarType} transparent={true}>
+        </TouchableOpacity>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 20,
+            marginBottom: 20,
+          }}>
+          <Text style={Styles2.subText}>Already have an account? </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Login')}>
+            <Text style={Styles2.subText1}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <Modal visible={this.state.selectAvatarType} transparent={true}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 22,
+            }}>
             <View
               style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 22,
+                marginTop: 10,
+                marginLeft: 10,
+                marginRight: 10,
+                backgroundColor: Color.primaryColor,
+                borderColor: Color.golden,
+                borderWidth: 1,
+                borderRadius: 15,
+                padding: 20,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+                width: '80%',
               }}>
+              <Text style={Styles.headerText1}>Select Avatar Type</Text>
               <View
                 style={{
-                  marginTop: 10,
-                  marginLeft: 10,
-                  marginRight: 10,
-                  backgroundColor: Color.darkgray,
-                  borderColor: Color.golden,
-                  borderWidth: 2,
-                  borderRadius: 15,
-                  padding: 20,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 5,
-                  width: '80%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 15,
                 }}>
-                <Text style={Styles.headerText1}>Select Avatar Type</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginLeft: 10,
-                    marginRight: 10,
-                    marginTop: 15,
-                  }}>
-                  <TouchableOpacity onPress={()=>this.chooseImage()}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Icon
-                        name="paypal"
-                        color="#001f6b"
-                        size={22}
-                        style={{marginLeft: 10}}></Icon>
-                      <Text style={Styles1.subText4}>Launch Camera</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.chooseGallery()}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Icon1
-                        name="stripe"
-                        color="#6772e5"
-                        size={22}
-                        style={{marginLeft: 10}}></Icon1>
-                      <Text style={Styles1.subText4}>Gallery</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => this.chooseImage()}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Icon3
+                      name="camera"
+                      color={Color.golden}
+                      size={22}
+                      style={{marginLeft: 10}}></Icon3>
+                    <Text style={[Styles1.subText4]}>Launch Camera</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.chooseGallery()}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Icon2
+                      name="images"
+                      color={Color.golden}
+                      size={22}
+                      style={{marginLeft: 10}}></Icon2>
+                    <Text style={[Styles1.subText4]}>Gallery</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
 
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'flex-end',
-                    marginTop: 20,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => this.setState({paymentMethod: false})}>
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: Color.golden,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Icon2
-                        name="arrow-left"
-                        color={Color.whiteColor}
-                        size={24}></Icon2>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  marginTop: 20,
+                }}>
+                <TouchableOpacity
+                  onPress={() => this.setState({selectAvatarType: false})}>
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: Color.golden,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon2
+                      name="arrow-left"
+                      color={Color.whiteColor}
+                      size={24}></Icon2>
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
-          </Modal>
-        
-        </ImageBackground>
+          </View>
+        </Modal>
+
       </View>
     );
   }

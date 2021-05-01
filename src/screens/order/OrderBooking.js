@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Dimensions,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import Styles from '../../styles/Styles';
 import {
@@ -15,6 +16,7 @@ import {
   Col,
 } from 'react-native-table-component';
 import Color from '../../utils/Colors.json';
+import CalendarStrip from 'react-native-calendar-strip';
 
 const {width, height} = Dimensions.get('window');
 
@@ -53,7 +55,17 @@ const OrderBooking = () => {
     20,
   ]);
   const [tableData, setTableData] = useState([
-    ['0001', 'Ali', 'ali@gmail.com', 12345, '2 - 2:30', 'Hair Cut', 'NA', 'NA'],
+    [
+      '0001',
+      'Ali',
+      'ali@gmail.com',
+      12345,
+      '2 - 2:30',
+      'Hair Cut',
+      'NA',
+      'NA',
+      'REQUESTED',
+    ],
     [
       '0002',
       'Sumbal',
@@ -63,6 +75,7 @@ const OrderBooking = () => {
       'Hair Cut',
       'Shariq',
       'Clifton',
+      'COMPLETED',
     ],
     [
       '0003',
@@ -73,10 +86,41 @@ const OrderBooking = () => {
       'Shave',
       'NA',
       'Nazimabad',
+      'CANCELLED',
     ],
-    ['0004', 'M. Ali', 'm_ali@gmail.com', 12345, '5 - 6', 'Hair Cut', 'NA', 'NA'],
-    ['0005', 'Ismail', 'milo@gmail.com', 12345, '8 - 9', 'Hair Cut', 'NA', 'NA'],
-    ['0006', 'Amin', 'amin@gmail.com', 12345, '8 - 9', 'Facial', 'Mikael', 'NA'],
+    [
+      '0004',
+      'M. Ali',
+      'm_ali@gmail.com',
+      12345,
+      '5 - 6',
+      'Hair Cut',
+      'NA',
+      'NA',
+      'REQUESTED',
+    ],
+    [
+      '0005',
+      'Ismail',
+      'milo@gmail.com',
+      12345,
+      '8 - 9',
+      'Hair Cut',
+      'NA',
+      'NA',
+      'REQUESTED',
+    ],
+    [
+      '0006',
+      'Amin',
+      'amin@gmail.com',
+      12345,
+      '8 - 9',
+      'Facial',
+      'Mikael',
+      'NA',
+      'CANCELLED',
+    ],
     [
       '0007',
       'Owais',
@@ -86,8 +130,19 @@ const OrderBooking = () => {
       'Pedicure',
       'NA',
       'Clifton',
+      'CANCELLED',
     ],
-    ['0008', 'Ali', 'ali@gmail.com', 12345, '2 - 2:30', 'Hair Cut', 'NA', 'NA'],
+    [
+      '0008',
+      'Ali',
+      'ali@gmail.com',
+      12345,
+      '2 - 2:30',
+      'Hair Cut',
+      'NA',
+      'NA',
+      'CANCELLED',
+    ],
     [
       '0009',
       'Sumbal',
@@ -97,49 +152,87 @@ const OrderBooking = () => {
       'Hair Cut',
       'Shariq',
       'Clifton',
+      'REQUESTED',
     ],
   ]);
-  const widthArr = [120, 120, 120, 120, 120, 120, 120, 120];
 
+  const renderItem = ({item}) => {
+    return (
+      <View
+        style={{
+          marginLeft: 40,
+          marginBottom: 0,
+          marginTop: 20,
+          padding: 10,
+          borderLeftColor:
+            (item[8] == 'CANCELLED' && '#7E191B') ||
+            (item[8] == 'REQUESTED' && '#F2AA4CFF') ||
+            (item[8] == 'COMPLETED' && '#006B38FF'),
+          borderWidth: 1,
+          backgroundColor: Color.darkgray,
+          opacity:0.8
+        }}>
+        {/* <View style={{flexDirection: 'row',justifyContent:'space-around'}}>
+          <View style={{width:50,height:50,borderRadius:25,backgroundColor:Color.primaryColor}}></View> */}
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{color: Color.whiteColor, margin: 10,fontWeight:'bold'}}>{item[1]}</Text>
+            <Text
+              style={{
+                color: Color.whiteColor,
+                margin: 10,
+                textAlign: 'right',
+                flex: 1,
+              }}>
+              1:00 - 3:00 pm
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{color: Color.greyColor, margin: 10}}>{item[5]}</Text>
+            <Text
+              style={{
+                color:
+                  (item[8] == 'CANCELLED' && '#7E191B') ||
+                  (item[8] == 'REQUESTED' && '#F2AA4CFF') ||
+                  (item[8] == 'COMPLETED' && '#006B38FF'),
+                margin: 10,
+                textAlign: 'right',
+                flex: 1,
+                fontWeight: 'bold',
+              }}>
+              {item[8]}
+            </Text>
+          </View>
+        {/* </View> */}
+      </View>
+    );
+  };
   return (
     <View style={Styles.background1}>
       <ImageBackground
         source={require('../../assets/images/orderBooking/odr.png')}
         style={{width: width, height: height}}>
-        {/* <Text style={Styles.headerText}>Bookings</Text> */}
-
-        <ScrollView horizontal={true}>
-          <View>
-            <Table style={{marginTop: 30}}>
-              <Row
-                data={tableHead}
-                widthArr={widthArr}
-                textStyle={{
-                  textAlign: 'center',
-                  color: Color.golden,
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                }}
-              />
-            </Table>
-            <ScrollView>
-              <Table>
-                <TableWrapper style={{ marginTop: 20}}>
-                  
-                  {tableData.map((rowData, index) => (
-                    <Row
-                      key={index}
-                      data={rowData}
-                      textStyle={{textAlign: 'center', color: Color.whiteColor}}
-                      widthArr={widthArr}
-                      style={[{marginTop:10,padding:10, opacity:0.7},index%2 && {backgroundColor: Color.darkgray}]}
-                    />
-                  ))}
-                </TableWrapper>
-              </Table>
-            </ScrollView>
-          </View>
-        </ScrollView>
+        <Text style={[Styles.headerText2, {backgroundColor: Color.darkgray}]}>
+          APPOINTMENTS
+        </Text>
+        <CalendarStrip
+          scrollable
+          scrollerPaging
+          style={{height: 100, paddingTop: 20, paddingBottom: 10, fontSize: 19}}
+          calendarColor={Color.darkgray}
+          calendarHeaderStyle={{color: 'white'}}
+          dateNumberStyle={{color: 'white'}}
+          dateNameStyle={{color: 'white'}}
+          highlightDateNumberStyle={{color: Color.golden}}
+          highlightDateNameStyle={{color: Color.golden}}
+          iconContainer={{flex: 0.1, color: 'red'}}
+          iconStyle={{
+            backgroundColor: Color.darkgray,
+            borderRadius: 40,
+            padding: 10,
+          }}
+        />
+        <FlatList data={tableData} renderItem={renderItem} />
       </ImageBackground>
     </View>
   );

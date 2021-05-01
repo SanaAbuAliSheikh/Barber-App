@@ -14,14 +14,14 @@ import ProfileIcon from 'react-native-vector-icons/FontAwesome5';
 
 const {width, height} = Dimensions.get('window');
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   const [slideStatus, setSlideStatus] = useState(false);
   return (
     <View style={Styles.background1}>
       <ImageBackground
         source={require('../../assets/images/orderBooking/odr.png')}
         style={{width: width, height: height}}>
-        <Text style={Styles.headerText}> Settings </Text>
+        <Text style={Styles.headerText}> SETTINGS </Text>
         <View
           style={{
             backgroundColor: Color.darkgray,
@@ -65,14 +65,17 @@ const Profile = () => {
                 paddingRight:50,
                 padding: 10,
               }}>
-              <View style={{flexDirection: 'row',alignItems:'center'}}>
+              {/* <View style={{flexDirection: 'row',alignItems:'center'}}>
               <Down name="calendar" color={Color.golden} size={23} />
 
                 <Text style={Styles.subText5}>History Order Bookings</Text>
-              </View>
+              </View> */}
               <View style={{flexDirection: 'row',alignItems:'center'}}>
+                
               <Logout name="post" color={Color.golden} size={23} />
-                <Text style={Styles.subText5}>Create Post</Text>
+                <TouchableOpacity onPress={()=>navigation.navigate('Notification')}>
+                  <Text style={Styles.subText5}>Notifications</Text>
+                </TouchableOpacity>
               </View>
               <View style={{flexDirection: 'row',alignItems:'center'}}>
               <ProfileIcon name="user-edit" color={Color.golden} size={20} />
@@ -90,7 +93,8 @@ const Profile = () => {
               marginRight: 20,
             }}>
             <Text style={[Styles.subText4, {fontWeight: 'bold'}]}>Logout</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('SignUp Form')}>
+            
               <Logout name="logout" color={Color.golden} size={25} />
             </TouchableOpacity>
           </View>

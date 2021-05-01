@@ -11,7 +11,6 @@ const Styles = StyleSheet.create({
     },
     background1: {
         flex:1,
-        // justifyContent:'center',
         backgroundColor: Color.primaryColor,
     },
     mainCategoryImage:{
@@ -139,6 +138,14 @@ const Styles = StyleSheet.create({
         marginTop:18,
 
     },
+    headerText2:{
+        color:'white',
+        fontSize:30,
+        fontWeight:'bold',
+        textAlign:'center',
+        paddingTop:18,
+
+    },
     headerText1:{
         color:Color.whiteColor,
         fontSize:20,
@@ -190,8 +197,41 @@ const Styles = StyleSheet.create({
         marginBottom:10
         // textDecorationLine:'underline'
     },
-
-    
+    subText6:{
+        color:'white',
+        fontSize:18,
+        textAlign:'center',
+    },
+    subText7:{
+        color:'white',
+        fontSize:18,
+        textAlign:'left',
+        fontWeight:'bold',
+        marginLeft:20,
+        marginRight:20
+    },
+    subText8:{
+        color:'white',
+        fontSize:25,
+        textAlign:'center',
+        marginRight:5
+    },
+    subText9:{
+        color:'white',
+        fontSize:14,
+        textAlign:'left',
+        marginLeft:20,
+        marginRight:20
+    },
+    button:{
+        backgroundColor: Color.primaryColor,
+        borderColor: Color.golden,
+        borderWidth: 1,
+        borderRadius: 30,
+        marginLeft: 90,
+        marginRight: 90,
+        marginTop: 90,
+    }
 })
    
 
