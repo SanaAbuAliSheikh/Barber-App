@@ -235,7 +235,7 @@ const Post = () => {
             marginRight: 20,
           }}>
           <Text style={Styles.subText4}> Create Job Post</Text>
-          <Icon4 name="post-add" color={Color.whiteColor} size={35} />
+          <Icon4 name="post-add" color={Color.golden} size={35} />
         </View>
       </TouchableOpacity>
       <Text style={Styles.subText4}> Job Post</Text>

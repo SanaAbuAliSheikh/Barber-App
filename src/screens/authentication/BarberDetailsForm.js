@@ -82,7 +82,6 @@ class BarberDetailsForm extends Component {
         {/* <Text style={Styles1.subText}>Any Style, Any Length, Any Time!</Text> */}
         {/* <View style={{alignItems:'center'}}>
         <View style={{borderTopColor:'white',borderWidth:1.5, marginTop:10, width:'90%'}}></View>
-
         </View> */}
 
         <View style={{alignItems: 'center', marginTop: height / 3}}>
