@@ -241,8 +241,7 @@ const Post = () => {
       <Text style={Styles.subText4}> Job Post</Text>
       <FlatList
         data={jobPosts}
-        renderItem={renderItem}
-        style={{marginBottom: 70}}></FlatList>
+        renderItem={renderItem}></FlatList>
 
       <Modal visible={addPost} transparent={true}>
         <View

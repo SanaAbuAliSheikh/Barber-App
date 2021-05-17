@@ -2,16 +2,10 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
-  ScrollView,
-  TextInput,
-  ImageBackground,
-  Image,
   Dimensions,
-  TouchableOpacity,
-  FlatList,
 } from 'react-native';
 
-import RadioForm from 'react-native-simple-radio-button';
+import RadioForm , {RadioButton} from 'react-native-simple-radio-button';
 
 import Styles from '../../styles/Styles';
 import Styles1 from '../../styles/BarberDetailsFormStyles';
@@ -27,6 +21,7 @@ import Footer from '../components/Footer';
 const {width, height} = Dimensions.get('window');
 
 const Category = props => {
+
   const [shop, setShop] = useState([
     {
       label: '',
@@ -51,55 +46,39 @@ const Category = props => {
       value: 0,
     },
   ]);
+  const [type, setType] = useState([
+    {
+      label: '',
+      value: 1,
+    },
+    {
+      label: '',
+      value: 2,
+    },
+  ]);
 
-  const [submit, setSubmit] = useState(false);
-  const [error, setError] = useState('emai');
-
-
-  const validation = () => {
-    console.log("valid!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    if(shop[0].value!=0||remote[0].value!=0){
-      
-      setError('Missing Select Category')
-      return false;
-    }
-    if(barber[0].value==1||beauty[0].value==1){
-      setError('Missing Select Type')
-
-      return false;
-    }
-    return true;
-  }
-
-  const onSubmit = async() => {
-    console.log('onSubmitttttttttttttttttt');
-    if(validation()){
-      setSubmit(true);
-    }
-    // this.props.navigation.navigate('Package Plan');
-  }
+  
+ 
   return (
     <View style={Styles.background}>
       <Header name="SELECT CATEGORY & TYPE" type={1} heading={true} image={false} subheading= {false}/>
       
-      {/* <Text style={Styles1.error}>{error}</Text> */}
 
       <View style={{display: 'flex', marginTop:20,flex:1}}>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <View style={{flexDirection: 'row', margin: 20}}>
-            <RadioForm
-              radio_props={remote}
-              initial={-1}
-              buttonSize={8}
-              onPress={() => setRemote(remote)}
+            <RadioButton
+              obj={remote}
+              isSelected={remote[0].value!=0?true:false}
+              onPress={(value) => {setShop([{label:'',value:0}]),setRemote([{label:'',value:1}])}}
               formHorizontal={true}
               labelStyle={{fontSize: 20}}
               labelHorizontal={true}
               buttonColor={Color.golden}
               selectedButtonColor={Color.golden}
-              buttonInnerColor={Color.golden}
-              labelColor={Color.whiteColor}
-              selectedLabelColor={Color.whiteColor}
+              buttonInnerColor={Color.primaryColor}
+              buttonSize={8}
+              buttonOuterSize={20}
               style={{marginTop: 2}}
             />
             <Icon2 name="home" color={Color.golden} size={20} />
@@ -114,11 +93,12 @@ const Category = props => {
               width: 4,
             }}></View>
           <View style={{flexDirection: 'row', margin: 20}}>
-            <RadioForm
-              radio_props={shop}
-              initial={-1}
+            <RadioButton
+              obj={shop}
               buttonSize={8}
-              onPress={() => setShop(shop)}
+              buttonOuterSize={20}
+              isSelected={shop[0].value!=0?true:false}
+              onPress={(value) => {setShop([{label:'',value:1}]),setRemote([{label:'',value:0}])}}
               formHorizontal={true}
               labelStyle={{fontSize: 20}}
               labelHorizontal={true}
@@ -156,11 +136,13 @@ const Category = props => {
             Barber
           </Text>
           <View style={{position: 'absolute', right: 10}}>
-            <RadioForm
-              radio_props={barber}
+            <RadioButton
+              obj={barber}
               initial={-1}
               buttonSize={8}
-              onPress={() => setBarber(barber)}
+              buttonOuterSize={20}
+              isSelected={barber[0].value!=0?true:false}
+              onPress={(value) => {setBeauty([{label:'',value:0}]),setBarber([{label:'',value:1}])}}
               formHorizontal={true}
               labelStyle={{fontSize: 20}}
               labelHorizontal={true}
@@ -193,11 +175,13 @@ const Category = props => {
             Beauty & Hair Dresser
           </Text>
           <View style={{position: 'absolute', right: 10}}>
-            <RadioForm
-              radio_props={beauty}
+            <RadioButton
+              obj={beauty}
               initial={-1}
               buttonSize={8}
-              onPress={() => setBeauty(beauty)}
+              buttonOuterSize={20}
+              isSelected={beauty[0].value!=0?true:false}
+              onPress={(value) => {setBeauty([{label:'',value:1}]),setBarber([{label:'',value:0}])}}
               formHorizontal={true}
               labelStyle={{fontSize: 20}}
               labelHorizontal={true}
@@ -214,10 +198,12 @@ const Category = props => {
       
       </View>
       
-      {/* <Footer redirect="Package Plan" submit={onSubmit} submitValue={submit}/> */}
-      <Footer redirect="Package Plan" />
+      {
+        ((shop[0].value==0&&remote[0].value==0)||(barber[0].value==0&&beauty[0].value==0))?console.log("Category"):
+        <Footer redirect="Package Plan" category={shop[0].value==1?'physical':'remote'} type={barber[0].value==1?'barber':'beauty'} />
 
-      {/* </ImageBackground> */}
+      }
+
     </View>
   );
 };

@@ -46,6 +46,9 @@
 		ED9BD5B9D9754118BD367D1E /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A19132BCD014D30890F46BC /* Montserrat-SemiBoldItalic.ttf */; };
 		D319D917D687497AAFCA5667 /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D7F6B376F74780BF44EAD3 /* Montserrat-Thin.ttf */; };
 		9A85D150FE9B4F61B92C869C /* Montserrat-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 59232E90AA604F4DB939CCB1 /* Montserrat-ThinItalic.ttf */; };
+		1A3D8987648D4F62A60FDDB6 /* LibreBaskerville-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D63BB6A9A3146998B6FB779 /* LibreBaskerville-Bold.ttf */; };
+		91DED07F9B6A4D959A78B5C1 /* LibreBaskerville-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB8D393734F6449C8A25FE9E /* LibreBaskerville-Italic.ttf */; };
+		8271C4135F3E459BA2704188 /* LibreBaskerville-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D3A6F394713469D9CB1ECB8 /* LibreBaskerville-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +107,9 @@
 		5A19132BCD014D30890F46BC /* Montserrat-SemiBoldItalic.ttf */ = {isa = PBXFileReference; name = "Montserrat-SemiBoldItalic.ttf"; path = "../assets/fonts/Montserrat-SemiBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F8D7F6B376F74780BF44EAD3 /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; name = "Montserrat-Thin.ttf"; path = "../assets/fonts/Montserrat-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		59232E90AA604F4DB939CCB1 /* Montserrat-ThinItalic.ttf */ = {isa = PBXFileReference; name = "Montserrat-ThinItalic.ttf"; path = "../assets/fonts/Montserrat-ThinItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9D63BB6A9A3146998B6FB779 /* LibreBaskerville-Bold.ttf */ = {isa = PBXFileReference; name = "LibreBaskerville-Bold.ttf"; path = "../assets/fonts/LibreBaskerville-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AB8D393734F6449C8A25FE9E /* LibreBaskerville-Italic.ttf */ = {isa = PBXFileReference; name = "LibreBaskerville-Italic.ttf"; path = "../assets/fonts/LibreBaskerville-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8D3A6F394713469D9CB1ECB8 /* LibreBaskerville-Regular.ttf */ = {isa = PBXFileReference; name = "LibreBaskerville-Regular.ttf"; path = "../assets/fonts/LibreBaskerville-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +236,9 @@
 				5A19132BCD014D30890F46BC /* Montserrat-SemiBoldItalic.ttf */,
 				F8D7F6B376F74780BF44EAD3 /* Montserrat-Thin.ttf */,
 				59232E90AA604F4DB939CCB1 /* Montserrat-ThinItalic.ttf */,
+				9D63BB6A9A3146998B6FB779 /* LibreBaskerville-Bold.ttf */,
+				AB8D393734F6449C8A25FE9E /* LibreBaskerville-Italic.ttf */,
+				8D3A6F394713469D9CB1ECB8 /* LibreBaskerville-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -359,6 +368,9 @@
 				ED9BD5B9D9754118BD367D1E /* Montserrat-SemiBoldItalic.ttf in Resources */,
 				D319D917D687497AAFCA5667 /* Montserrat-Thin.ttf in Resources */,
 				9A85D150FE9B4F61B92C869C /* Montserrat-ThinItalic.ttf in Resources */,
+				1A3D8987648D4F62A60FDDB6 /* LibreBaskerville-Bold.ttf in Resources */,
+				91DED07F9B6A4D959A78B5C1 /* LibreBaskerville-Italic.ttf in Resources */,
+				8271C4135F3E459BA2704188 /* LibreBaskerville-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

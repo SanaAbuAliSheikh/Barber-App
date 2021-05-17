@@ -7,11 +7,9 @@ import {
 } from 'react-native';
 
 import Styles from '../../styles/Styles';
-import Styles1 from '../../styles/BarberDetailsFormStyles';
 
 import Color from '../../utils/Colors.json';
 import Icon2 from 'react-native-vector-icons/Entypo';
-import Icon1 from 'react-native-vector-icons/FontAwesome';
 
 import Carousel from 'react-native-banner-carousel';
 const {width, height} = Dimensions.get('window');
@@ -21,7 +19,9 @@ const BannerHeight = 260;
 import Header from '../components/Header';
 
 
-const Plan = ({navigation}) => {
+const Plan = (props) => {
+    const {category, type} = props.route.params;
+    console.log(category, type);
     const Data = [
         {
             id:1,
@@ -80,7 +80,7 @@ const Plan = ({navigation}) => {
                             </View>
                             <Text style={{color:'black', textAlign:'center'}}>{val.packageDetails}</Text>
                         </View>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Shop Info')} style={{borderColor:Color.golden, borderWidth:2, padding:10, margin:10, borderRadius:25, marginBottom:20}}>
+                        <TouchableOpacity onPress={()=>props.navigation.navigate('Shop Info',{category, type, id: val.id})} style={{borderColor:Color.golden, borderWidth:2, padding:10, margin:10, borderRadius:25, marginBottom:20}}>
                             <Text style={{fontWeight:'bold'}}>BECOME {val.packageName}</Text>
                         </TouchableOpacity>
                     </View>

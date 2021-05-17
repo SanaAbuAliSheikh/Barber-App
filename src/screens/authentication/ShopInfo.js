@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,9 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import {Checkbox} from 'react-native-paper';
 
 import Styles from '../../styles/Styles';
 import Styles1 from '../../styles/BarberDetailsFormStyles';
-import Styles2 from '../../styles/LoginStyles';
 
 import Color from '../../utils/Colors.json';
 
@@ -25,47 +23,27 @@ import Icon3 from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+import AddressApi, { getAddressPrediction } from '../../components/Api';
+import axios from 'axios';
+import { config } from '../../utils/Static';
 
 const {width, height} = Dimensions.get('window');
-class ShopInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showServices: false,
-      setSelection: false,
-      setSelection1: false,
+const ShopInfo = (props) => {
+  const [showAddressModal, setShowAddressModal] = useState(false)
 
-      fileUri: '',
-      empRec: [0],
-    };
+  const {category, type, id} = props.route.params;
+  console.log(category, type, id);
+
+  const getBreeds = async () => {
+    try {
+      console.log("breed");
+       let resp = await axios.get("https://dog.ceo/api/breeds/list/all",config)
+       console.log("sssssss");
+    } catch (error) {
+      console.error(error)
+    }
   }
-
-  chooseImage = () => {
-    console.log('image picker');
-    let options = {
-      title: 'Select Image',
-      customButtons: [
-        {name: 'customOptionKey', title: 'Choose Photo from Custom Option'},
-      ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-  };
-
-  addEmpRec = () => {
-    let joined = this.state.empRec.concat('1');
-    this.setState({empRec: joined});
-  };
-
-  remEmpRec = index => {
-    let joined = this.state.empRec.splice(index, 1);
-    this.setState({empRec: joined});
-  };
-
-  render() {
+  getBreeds();
     return (
       <View style={Styles.background}>
           <Header type={2} name="SHOP'S INFO" subname="Please enter your personal information to Login on the platform." heading={true} image={false} subheading= {true}/>
@@ -111,10 +89,16 @@ class ShopInfo extends Component {
                   color={Color.golden}
                   size={25}
                   style={{marginTop: 22}}></Icon2>
-                <TextInput
-                  placeholder="Enter Address"
-                  placeholderTextColor={Color.whiteColor}
-                  style={Styles1.TextInputStyle}></TextInput>
+                <TouchableOpacity style={{width:'92%'}} onPress={()=>{AddressApi.getAddressPrediction(2)}}>
+                  <TextInput
+                    placeholder="Enter Address"
+                    placeholderTextColor={Color.whiteColor}
+                    style={Styles1.TextInputStyle}
+                    onChangeText={(text)=>getAddressPrediction(text)}
+                    // editable={false}
+                    ></TextInput>
+                </TouchableOpacity>
+
               </View>
               <View style={{flexDirection: 'row', margin: 20}}>
                 <Icon1
@@ -139,124 +123,22 @@ class ShopInfo extends Component {
                   placeholderTextColor={Color.whiteColor}
                   style={Styles1.TextInputStyle}></TextInput>
               </View>
-              <View style={{flexDirection: 'row', margin: 20}}>
-                <Icon2
-                  name="scissors"
-                  color={Color.golden}
-                  size={25}
-                  style={{marginTop: 22}}></Icon2>
-                <TouchableOpacity
-                  style={{width: '92%'}}
-                  onPress={() => this.setState({showServices: true})}>
-                  <TextInput
-                    placeholder="Select Shop Services"
-                    placeholderTextColor={Color.whiteColor}
-                    editable={false}
-                    style={Styles1.TextInputStyle}></TextInput>
-                </TouchableOpacity>
-              </View>
+              {
+                showAddressModal&&
+                <Modal visible={false}>
+                  <View>
+                    <Text>ADDRESSES</Text>
+                  </View>
+                </Modal>
+              }
             </View>
           </ScrollView>
 
           <Footer redirect="Services"/>     
 
-          <Modal visible={this.state.showServices} transparent={true}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 22,
-              }}>
-              {/* <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 10,
-                  marginRight: 10,
-                  backgroundColor: Color.primaryColor,
-                  borderColor: Color.golden,
-                  borderWidth: 1,
-                  borderRadius: 15,
-                  padding: 20,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 5,
-                  width: '80%',
-                }}>
-                <Text style={Styles.headerText1}>Select Services</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginTop: 15, marginLeft:15, marginRight:15,
-                    alignItems: 'center',
-                  }}>
-                  <Checkbox
-                    status={this.state.setSelection ? 'checked' : 'unchecked'}
-                    onPress={() =>
-                      this.setState({setSelection: !this.state.setSelection})
-                    }
-                    color="white"
-                    uncheckedColor="white"
-                  />
-                  <Text style={Styles1.subText5}>Hair Cutting</Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    margin: 15,
-                    alignItems: 'center',
-                  }}>
-                  <Checkbox
-                    status={this.state.setSelection1 ? 'checked' : 'unchecked'}
-                    onPress={() =>
-                      this.setState({setSelection1: !this.state.setSelection1})
-                    }
-                    color="white"
-                    uncheckedColor="white"
-                  />
-                  <Text style={Styles1.subText5}>Beard</Text>
-                </View>
-
-                
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'flex-end',
-                    marginTop: 20,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => this.setState({showServices: false})}>
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: Color.golden,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Icon2
-                        name="arrow-left"
-                        color={Color.whiteColor}
-                        size={24}></Icon2>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-             */}
-            </View>
-          </Modal>
+          
       </View>
     );
   }
-}
 
 export default ShopInfo;
