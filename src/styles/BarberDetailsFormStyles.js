@@ -64,7 +64,7 @@ const Styles = StyleSheet.create({
     color: Color.whiteColor,
     fontSize: 15,
     textAlign: 'center',
-    marginLeft: 15,
+    marginLeft: 28,
     // textDecorationLine:'underline'
   },
   subText4: {
@@ -84,7 +84,7 @@ const Styles = StyleSheet.create({
     color: Color.whiteColor,
     flex: 1,
     borderTopColor: 'transparent',
-    borderBottomColor: Color.whiteColor,
+    
     borderColor: Color.primaryColor,
     // borderRadius:30,
     borderWidth: 1,

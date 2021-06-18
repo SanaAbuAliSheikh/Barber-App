@@ -27,10 +27,11 @@ import Icon4 from 'react-native-vector-icons/Fontisto';
 import Header from '../components/Header';
 
 import {register_owner} from '../../actions/auth';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const {width, height} = Dimensions.get('window');
-const Account = (props) => {
+const Account = props => {
   const [fileUri, setFileUri] = useState('');
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
@@ -81,8 +82,6 @@ const Account = (props) => {
       ImagePicker.openCamera({
         width: 300,
         height: 400,
-        // cropping: true,
-        // multiple:true,
         includeBase64: true,
       }).then(image => {
         setFileUri(image);
@@ -140,7 +139,7 @@ const Account = (props) => {
   };
 
   const validation = () => {
-    console.log("VALID");
+    console.log('VALID');
     if (fileUri == '') {
       setError('Missing Avatar');
       return false;
@@ -165,15 +164,26 @@ const Account = (props) => {
   };
 
   const onSubmit = async () => {
-    // if(validation()){
-    //   console.log(fileUri.mime, firstname, lastname, email, password);
-    //   props.navigation.navigate('Category');
-    // }
-    console.log("rigisterrrrrrrrrrrr");
-    await props.register_owner({firstName:firstname,lastName:lastname,email,password,image:fileUri.data})
-    // props.navigation.navigate('Category');
+    if (validation()) {
+      await props.register_owner({
+        firstname,
+        lastname,
+        email,
+        password,
+        image: fileUri&&fileUri.data,
+      });
+      props.navigation.navigate('Category');
+    }
     
   };
+  useEffect(async()=>{
+    // const ownerId = await AsyncStorage.getItem('owner_id');
+    // const shopId = await AsyncStorage.getItem('shop_id');
+
+    // (!ownerId && !shopId) ?console.log("No ownerId & shopId"):
+    // shopId?props.navigation.navigate('Category'):null
+    // :props.navigation.navigate('Category');
+ },[]);
 
   return (
     <View style={Styles.background}>
@@ -186,9 +196,8 @@ const Account = (props) => {
         subheading={true}
       />
       <Text style={Styles1.error}>{error}</Text>
-      <ScrollView style={{marginTop:5}}>
-        <View
-          style={{justifyContent: 'center', marginBottom: 10}}>
+      <ScrollView style={{marginTop: 5}}>
+        <View style={{justifyContent: 'center', marginBottom: 10}}>
           <TouchableOpacity onPress={() => setSelectAvatarType(true)}>
             <View
               style={{
@@ -216,7 +225,13 @@ const Account = (props) => {
                   <Icon2 name="edit" color={Color.golden} size={20}></Icon2>
                 </View>
               )}
-              <Text style={Styles1.subText3}>Select Your Avatar</Text>
+              <Text
+                style={[
+                  Styles1.subText3,
+                  {color: fileUri ? Color.whiteColor : Color.lightGrey},
+                ]}>
+                Select Your Avatar
+              </Text>
             </View>
           </TouchableOpacity>
           <View style={{flexDirection: 'row', margin: 20}}>
@@ -227,10 +242,17 @@ const Account = (props) => {
               style={{marginTop: 22}}></Icon>
             <TextInput
               placeholder="Enter Firstname"
-              placeholderTextColor={Color.whiteColor}
+              placeholderTextColor={Color.lightGrey}
               value={firstname}
               onChangeText={text => setFirstName(text)}
-              style={Styles1.TextInputStyle}></TextInput>
+              style={[
+                Styles1.TextInputStyle,
+                {
+                  borderBottomColor: firstname
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },
+              ]}></TextInput>
           </View>
           <View style={{flexDirection: 'row', margin: 20}}>
             <Icon
@@ -240,10 +262,17 @@ const Account = (props) => {
               style={{marginTop: 22}}></Icon>
             <TextInput
               placeholder="Enter Lastname"
-              placeholderTextColor={Color.whiteColor}
+              placeholderTextColor={Color.lightGrey}
               value={lastname}
               onChangeText={text => setLastName(text)}
-              style={Styles1.TextInputStyle}></TextInput>
+              style={[
+                Styles1.TextInputStyle,
+                {
+                  borderBottomColor: lastname
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },
+              ]}></TextInput>
           </View>
           <View style={{flexDirection: 'row', margin: 20}}>
             <Icon1
@@ -253,10 +282,13 @@ const Account = (props) => {
               style={{marginTop: 22}}></Icon1>
             <TextInput
               placeholder="Enter Email"
-              placeholderTextColor={Color.whiteColor}
+              placeholderTextColor={Color.lightGrey}
               value={email}
               onChangeText={text => setEmail(text)}
-              style={Styles1.TextInputStyle}></TextInput>
+              style={[
+                Styles1.TextInputStyle,
+                {borderBottomColor: email ? Color.whiteColor : Color.lightGrey},
+              ]}></TextInput>
           </View>
 
           <View style={{flexDirection: 'row', margin: 20, marginRight: 0}}>
@@ -267,11 +299,18 @@ const Account = (props) => {
               style={{marginTop: 22}}></Icon4>
             <TextInput
               placeholder="Enter Password"
-              placeholderTextColor={Color.whiteColor}
+              placeholderTextColor={Color.lightGrey}
               value={password}
               onChangeText={text => setPassword(text)}
               secureTextEntry={encryptedPass}
-              style={Styles1.TextInputStyle}></TextInput>
+              style={[
+                Styles1.TextInputStyle,
+                {
+                  borderBottomColor: password
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },
+              ]}></TextInput>
             <TouchableOpacity onPress={() => setEncryptedPass(!encryptedPass)}>
               <Icon2
                 name={encryptedPass ? 'eye-with-line' : 'eye'}
@@ -283,7 +322,7 @@ const Account = (props) => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity onPress={()=> onSubmit()}>
+      <TouchableOpacity onPress={() => onSubmit()}>
         <View
           style={{
             backgroundColor: Color.primaryColor,
@@ -306,8 +345,7 @@ const Account = (props) => {
           marginBottom: 20,
         }}>
         <Text style={Styles2.subText}>Already have an account? </Text>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
           <Text style={Styles2.subText1}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -346,7 +384,7 @@ const Account = (props) => {
                 justifyContent: 'space-between',
                 marginTop: 15,
               }}>
-              <TouchableOpacity onPress={()=>chooseImage()}>
+              <TouchableOpacity onPress={() => chooseImage()}>
                 <View style={{flexDirection: 'row'}}>
                   <Icon3
                     name="camera"
@@ -398,6 +436,6 @@ const Account = (props) => {
   );
 };
 const mapStateToProps = state => ({
-  
-})
-export default connect(mapStateToProps,{register_owner})(Account);
+  ownerId: state.auth.ownerId
+});
+export default connect(mapStateToProps, {register_owner})(Account);

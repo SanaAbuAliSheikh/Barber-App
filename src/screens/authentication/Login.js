@@ -20,6 +20,9 @@ import Icon2 from 'react-native-vector-icons/Entypo';
 
 import Header from '../components/Header';
 
+import {login_owner} from '../../actions/auth';
+import {connect} from 'react-redux';
+
 
 const {width, height} = Dimensions.get('window');
 class Login extends Component {
@@ -32,6 +35,8 @@ class Login extends Component {
       error:''
     };
   }
+
+  // const [email, setEmail] = 
 
   validation = () => {
     const {email, password} = this.state;
@@ -52,7 +57,10 @@ class Login extends Component {
 
   onSubmit = async() =>{
     // if(this.validation()){
-      this.props.navigation.navigate('Tab Menu');
+      const {email, password} = this.state;
+      await this.props.login_owner({email,password})
+      console.log("___________________________________");
+      this.props.navigation.navigate('All Shops');
     // }
   }
   render() {
@@ -71,10 +79,14 @@ class Login extends Component {
                 style={{marginTop: 22}}></Icon1>
               <TextInput
                 placeholder="Enter Email"
-                placeholderTextColor={Color.whiteColor}
+                placeholderTextColor={this.state.email?Color.whiteColor:Color.lightGrey}
                 value={this.state.email}
                 onChangeText={(text)=>this.setState({email:text})}
-                style={Styles1.TextInputStyle}></TextInput>
+                style={[Styles1.TextInputStyle,{
+                  borderBottomColor: this.state.email
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                }]}></TextInput>
             </View>
 
             <View style={{flexDirection: 'row', margin: 20,marginRight:0}}>
@@ -85,12 +97,16 @@ class Login extends Component {
                 style={{marginTop: 22}}></Icon2>
               <TextInput
                 placeholder="Enter Password"
-                placeholderTextColor={Color.whiteColor}
-                placeholderStyle={{fontFamily:'LibreBaskerville-Regular',color:'red'}}
+                placeholderTextColor={this.state.password?Color.whiteColor:Color.lightGrey}
+                placeholderStyle={{color:'red'}}
                 secureTextEntry={this.state.encryptedPass}
                 value={this.state.password}
                 onChangeText={(text)=>this.setState({password:text})}
-                style={Styles1.TextInputStyle}></TextInput>
+                style={[Styles1.TextInputStyle,{
+                  borderBottomColor: this.state.password
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                }]}></TextInput>
                 <TouchableOpacity onPress={()=>this.setState({encryptedPass:!this.state.encryptedPass})}>
                 <Icon2
                 name={this.state.encryptedPass?"eye-with-line":"eye"}
@@ -127,5 +143,7 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
+// const mapStateToProps = state => ({
+//   ownerId: state.auth.ownerId
+// });
+export default connect(null, {login_owner})(Login);

@@ -193,13 +193,13 @@ const Notification = () => {
       <Text style={Styles.headerText}>NOTIFICATIONS</Text>
       
       
-      <Text style={Styles.subText4}> New</Text>
+      <Text style={[Styles.subText4,{color:Color.golden,fontWeight:'bold'}]}> New</Text>
       <FlatList
         data={jobPosts}
         renderItem={renderItem}
         style={{height:450}}></FlatList>
 
-    <Text style={[Styles.subText4]}> Older Notifications</Text>
+    <Text style={[Styles.subText4,{color:Color.golden,fontWeight:'bold'}]}> Older Notifications</Text>
         <FlatList
             data={jobPosts}
             renderItem={renderItem}

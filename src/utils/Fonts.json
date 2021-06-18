@@ -1,10 +1,10 @@
 {
-    "fontFamilyHeading":"LibreBaskerville-Bold",
+    "fontFamilyHeading":"",
     "fontSizeHeading":26,
 
-    "fontFamilyButtons":"LibreBaskerville-Italic",
+    "fontFamilyButtons":"",
     "fontSizeButtons":17,
 
-    "fontFamilySubHeading":"LibreBaskerville-Regular",
+    "fontFamilySubHeading":"",
     "fontSizeSubHeading":15
 }

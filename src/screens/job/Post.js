@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -21,64 +21,78 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import Icon3 from 'react-native-vector-icons/FontAwesome';
 import Icon4 from 'react-native-vector-icons/MaterialIcons';
 
+import {get_jobs, create_jobs} from '../../actions/auth';
+import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/native'
+
 const {width, height} = Dimensions.get('window');
 
-const Post = () => {
+const Post = (props) => {
   const [jobTitle, setJobTitle] = useState('');
   const [jobDesc, setJobDesc] = useState('');
   const [jobArea, setJobArea] = useState('');
   const [jobPkg, setJobPkg] = useState('');
   const [jobType, setJobType] = useState('');
+  const [email, setEmail] = useState('');
+  const [shop, setShop] = useState('');
+
   const [jobUrgent, setJobUrgent] = useState(false);
   const [jobExp, setJobExp] = useState('');
   //encryptedPass
   const [encryptedPass, setEncryptedPass] = useState(false);
 
   const [addPost, setAddPost] = useState(false);
-  const [jobPosts, setJobPost] = useState([
-    {
-      jobTitle: 'Hair Cutting Job',
-      jobDescription:
-        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      jobArea: 'Clifton Block 8',
-      jobPackage: '250 $ - 300 $',
-      urgentRequired: true,
-      type: 'Full Time',
-      exp: '2 - 3 years',
-    },
-    {
-      jobTitle: 'Shaving Job',
-      jobDescription:
-        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      jobArea: 'Clifton Block 10',
-      jobPackage: '55 $ - 60 $',
-      urgentRequired: true,
-      type: 'Full Time',
-      exp: '2 - 3 years',
-    },
-    {
-      jobTitle: 'Beard Making Job',
-      jobDescription:
-        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      jobArea: 'Clifton Block 8',
-      jobPackage: '500 $ - 800 $',
-      urgentRequired: false,
-      type: 'Remote',
-      exp: '1 - 2 years',
-    },
-  ]);
-  const [jobPostsCopy, setJobPostsCopy] = useState(jobPosts);
+  const [jobPosts, setJobPost] = useState([])
+  // const [jobPosts, setJobPost] = useState([
+  //   {
+  //     jobTitle: 'Hair Cutting Job',
+  //     jobDescription:
+  //       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+  //     jobArea: 'Clifton Block 8',
+  //     jobPackage: '250 $ - 300 $',
+  //     urgentRequired: true,
+  //     type: 'Full Time',
+  //     exp: '2 - 3 years',
+  //   },
+  //   {
+  //     jobTitle: 'Shaving Job',
+  //     jobDescription:
+  //       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+  //     jobArea: 'Clifton Block 10',
+  //     jobPackage: '55 $ - 60 $',
+  //     urgentRequired: true,
+  //     type: 'Full Time',
+  //     exp: '2 - 3 years',
+  //   },
+  //   {
+  //     jobTitle: 'Beard Making Job',
+  //     jobDescription:
+  //       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+  //     jobArea: 'Clifton Block 8',
+  //     jobPackage: '500 $ - 800 $',
+  //     urgentRequired: false,
+  //     type: 'Remote',
+  //     exp: '1 - 2 years',
+  //   },
+  // ]);
+  const [jobPostsCopy, setJobPostsCopy] = useState([]);
 
   const searchTitle = value => {
     console.log(value.length);
     if (value.length > 0) {
       const filteredPosts = jobPostsCopy.filter(post => {
-        let postLowerCase = post.jobTitle.toLowerCase();
+        console.log(post.title);
+        let postLowerCase = post.title.toLowerCase();
         let searchTermLowerCase = value.toLowerCase();
 
         return postLowerCase.indexOf(searchTermLowerCase) > -1;
       });
       setJobPost(filteredPosts);
+    }
+    if (value.length == 0) {
+      
+      setJobPost(props.jobDetails);
     }
   };
 
@@ -100,7 +114,7 @@ const Post = () => {
             margin: 20,
             fontWeight: 'bold',
           }}>
-          {item.jobTitle}
+          {item.title}
         </Text>
         <Text
           style={{
@@ -109,7 +123,7 @@ const Post = () => {
             marginLeft: 20,
             marginRight: 20,
           }}>
-          {item.jobDescription}
+          {item.description}
         </Text>
         {/* <View style={{width:'90%',borderColor:Color.whiteColor,borderWidth:1,margin:20}}></View> */}
 
@@ -128,7 +142,7 @@ const Post = () => {
               marginLeft: 20,
               marginRight: 20,
             }}>
-            {item.jobPackage}
+            {item.package}
           </Text>
         </View>
         <View
@@ -146,7 +160,7 @@ const Post = () => {
               marginLeft: 17,
               marginRight: 20,
             }}>
-            {item.jobArea}
+            {item.area}
           </Text>
           <Text
             style={{
@@ -176,16 +190,16 @@ const Post = () => {
             marginBottom: 20,
             alignItems: 'center',
           }}>
-          <Icon3 name="briefcase" color={Color.golden} size={23} />
-          <Text
+          {/* <Icon3 name="briefcase" color={Color.golden} size={23} /> */}
+          {/* <Text
             style={{
               color: Color.whiteColor,
               fontSize: 15,
               marginLeft: 17,
               marginRight: 20,
             }}>
-            {item.exp}
-          </Text>
+            {item.email}
+          </Text> */}
           <Text
             style={{
               color: '#800000',
@@ -196,12 +210,42 @@ const Post = () => {
               marginRight: 20,
               fontWeight: 'bold',
             }}>
-            {item.urgentRequired && 'Urgent Required'}
+            Urgent
           </Text>
         </View>
       </View>
     );
   };
+  console.log(props.jobDetails)
+
+  useEffect(async()=>{
+    const shopId = await AsyncStorage.getItem('shop_id');
+    setShop(shopId)
+
+    await props.get_jobs()
+    props.jobDetails&&(
+    setJobPost(props.jobDetails.data),
+    setJobPostsCopy(props.jobDetails.data))
+    console.log(jobPosts);
+  },[]);
+
+//   useFocusEffect(
+//     React.useCallback(async() => {
+//       await props.get_jobs()
+//     },[])
+// )
+
+  const onSubmit = async() => {
+    await props.create_jobs({shop,name:jobTitle,description:jobDesc,email:email,type:jobType, area: jobArea, packages:jobPkg, experience:jobExp});
+    setAddPost(false);
+    setJobTitle('');
+    setJobDesc('');
+    setJobArea('');
+    setJobPkg('');
+    setJobType('');
+    setEmail('');
+    setJobExp('')
+  }
   return (
     <View style={Styles.background1}>
       <Text style={Styles.headerText}>JOB POSTS</Text>
@@ -240,7 +284,7 @@ const Post = () => {
       </TouchableOpacity>
       <Text style={Styles.subText4}> Job Post</Text>
       <FlatList
-        data={jobPosts}
+        data={jobPosts&&jobPosts}
         renderItem={renderItem}></FlatList>
 
       <Modal visible={addPost} transparent={true}>
@@ -274,80 +318,155 @@ const Post = () => {
             <Text style={Styles.headerText1}>ADD JOB POST</Text>
 
             <View style={{justifyContent: 'center'}}>
-              <View style={{flexDirection: 'row', marginTop: 20,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
                 <TextInput
                   placeholder="Enter Job Title"
-                  placeholderTextColor={Color.whiteColor}
+                  placeholderTextColor={jobTitle?Color.whiteColor:Color.lightGrey}
                   value={jobTitle}
                   onChangeText={text => setJobTitle(text)}
-                  style={Styles1.TextInputStyle}></TextInput>
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: jobTitle
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
               </View>
 
               <View style={{flexDirection: 'row', margin: 20, marginLeft: 0, marginRight:0}}>
                 <TextInput
                   placeholder="Enter Job Desc"
-                  placeholderTextColor={Color.whiteColor}
+                  placeholderTextColor={jobDesc?Color.whiteColor:Color.lightGrey}
                   placeholderStyle={{
-                    fontFamily: 'LibreBaskerville-Regular',
                     color: 'red',
                   }}
                   multiline={true}
                   secureTextEntry={encryptedPass}
                   value={jobDesc}
                   onChangeText={text => setJobDesc(text)}
-                  style={Styles1.TextInputStyle}></TextInput>
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: jobDesc
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
                 
               </View>
-              <View style={{flexDirection: 'row', marginTop: 20,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+                <TextInput
+                  placeholder="Enter Job Type"
+                  placeholderTextColor={jobType?Color.whiteColor:Color.lightGrey}
+                  value={jobType}
+                  onChangeText={text => setJobType(text)}
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: jobType
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
+              </View>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+                <TextInput
+                  placeholder="Enter Email"
+                  placeholderTextColor={email?Color.whiteColor:Color.lightGrey}
+                  value={email}
+                  onChangeText={text => setEmail(text)}
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: email
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
+              </View>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
                 <TextInput
                   placeholder="Enter Job Area"
-                  placeholderTextColor={Color.whiteColor}
+                  placeholderTextColor={jobArea?Color.whiteColor:Color.lightGrey}
                   value={jobArea}
                   onChangeText={text => setJobArea(text)}
-                  style={Styles1.TextInputStyle}></TextInput>
+                  style={[Styles1.TextInputStyle,{
+                    borderBottomColor: jobArea
+                      ? Color.whiteColor
+                      : Color.lightGrey,
+                  },]}></TextInput>
               </View>
-              <View style={{flexDirection: 'row', marginTop: 20,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
                 <TextInput
                   placeholder="Enter Job Package"
-                  placeholderTextColor={Color.whiteColor}
+                  placeholderTextColor={jobPkg?Color.whiteColor:Color.lightGrey}
                   value={jobPkg}
                   onChangeText={text => setJobPkg(text)}
-                  style={Styles1.TextInputStyle}></TextInput>
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: jobPkg
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
               </View>
-              <View style={{flexDirection: 'row', marginTop: 20,  marginBottom:10, marginLeft: 0, marginRight:0}}>
+              <View style={{flexDirection: 'row', marginTop: 10,  marginBottom:10, marginLeft: 0, marginRight:0}}>
                 <TextInput
                   placeholder="Enter Job Experience"
-                  placeholderTextColor={Color.whiteColor}
+                  placeholderTextColor={jobExp?Color.whiteColor:Color.lightGrey}
                   value={jobExp}
                   onChangeText={text => setJobExp(text)}
-                  style={Styles1.TextInputStyle}></TextInput>
+                  style={[Styles1.TextInputStyle,{
+                  borderBottomColor: jobExp
+                    ? Color.whiteColor
+                    : Color.lightGrey,
+                },]}></TextInput>
               </View>
             </View>
 
+            <View style={{flexDirection:'row',alignItems:'stretch',justifyContent:'space-between'}}>
             <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'flex-end',
-                marginTop: 20,
-              }}>
-              <TouchableOpacity
-                 onPress={() => setAddPost(false)}
-                 >
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: Color.golden,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon2
-                    name="arrow-left"
-                    color={Color.whiteColor}
-                    size={24}></Icon2>
-                </View>
-              </TouchableOpacity>
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  marginTop: 20,
+                  flexDirection:'row'
+                }}>
+                <TouchableOpacity
+                  onPress={() => onSubmit()}
+                  >
+                  <View
+                    style={{
+                      padding:10,
+                      borderRadius: 20,
+                      backgroundColor: Color.golden,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{color:Color.whiteColor}}>Submit</Text>
+                  </View>
+                </TouchableOpacity>
+                
+              
+              </View>
+          
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  marginTop: 20,
+                  flexDirection:'row'
+                }}>
+                <TouchableOpacity
+                  onPress={() => setAddPost(false)}
+                  >
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: Color.golden,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon2
+                      name="arrow-left"
+                      color={Color.whiteColor}
+                      size={24}></Icon2>
+                  </View>
+                </TouchableOpacity>
+                
+              
+              </View>
+                    
+              
             </View>
           </View>
         </View>
@@ -355,5 +474,7 @@ const Post = () => {
     </View>
   );
 };
-
-export default Post;
+const mapStateToProps = state => ({
+  jobDetails: state.auth.job
+});
+export default connect(mapStateToProps,{get_jobs, create_jobs})(Post);

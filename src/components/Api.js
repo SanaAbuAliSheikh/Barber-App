@@ -71,14 +71,24 @@ export const AddressApi = {
   },
 };
 export const getAddressPrediction = async (word, city = false) => {
-    let url ="https://jsonplaceholder.typicode.com/todos/1";
-    console.log("URL",url);
+    let url =`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${word}&key=AIzaSyBFRqlCOvRtuKLpvDSP5qLkiyCr5dKx7jI`;
     try {
-        console.log("eeeeeee");
-        const response = await axios.get("https://jsonplaceholder.typicode.com/todos/1");
-        console.log("response!!!!!!!");
+        const response = await axios.get(url);
+        const predictions = response.data.predictions;
+        return predictions;
     } catch (error) {
         console.error(error);
     }
-   
-  }
+}
+
+export const getGeoCode = async (address) => {
+  let url = geocodeUrl + address;
+  try {
+    const response = await axios.get(url);
+    console.log("geoCode",response.data);
+    const geoCode = response.data;
+    return geoCode;
+} catch (error) {
+    console.error(error);
+}
+}

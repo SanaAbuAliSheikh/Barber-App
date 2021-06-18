@@ -31,20 +31,26 @@ const {width, height} = Dimensions.get('window');
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Images = ({navigation}) => {
-    const [shopImages,setShopImages] = useState([])
+const Images = (props) => {
+    const [shopImages,setShopImages] = useState([]);
+    const [images,setImages] = useState([])
+    const {name,email,phone,address,zipCode,country,lat,long,category, type, id} = props.route.params.data; 
+
 
     const selectImage = () => {
-        var newArr = []
+        var newArr = [];
+        var base64Arr = [];
         ImagePicker.openPicker({
-            multiple: true
+            multiple: true,
+            includeBase64: true
           }).then(images => {
             console.log(images);
             images.map(s => {
-                newArr.push(s.path)
+                newArr.push(s.path);
+                base64Arr.push(s.data)
             })
-        setShopImages(newArr)
-
+        setShopImages(newArr);
+        setImages(base64Arr);
         });
     }
 
@@ -79,7 +85,7 @@ const Images = ({navigation}) => {
                     ):null
                 }
             </View>
-            <Footer redirect="Payment" />
+            <Footer redirect="Services" data={{images,name,email,phone,address,zipCode,country,lat,long,category, type, id}}/>
 
         </View>
     )

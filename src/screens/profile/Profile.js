@@ -11,11 +11,23 @@ import Color from '../../utils/Colors.json';
 import Down from 'react-native-vector-icons/Entypo';
 import Logout from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProfileIcon from 'react-native-vector-icons/FontAwesome5';
+import { logout } from '../../actions/auth';
+import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 const {width, height} = Dimensions.get('window');
 
-const Profile = ({navigation}) => {
+const Profile = (props) => {
   const [slideStatus, setSlideStatus] = useState(false);
+
+  const handleLogout = async () => {
+    console.log("logouttttttttt");
+    await props.logout();
+    // const isLoggedIn = await AsyncStorage.getItem('token');
+
+    // !isLoggedIn&&props.navigation.navigate('SignUp Form')
+  }
   return (
     <View style={Styles.background1}>
       <ImageBackground
@@ -73,7 +85,7 @@ const Profile = ({navigation}) => {
               <View style={{flexDirection: 'row',alignItems:'center'}}>
                 
               <Logout name="post" color={Color.golden} size={23} />
-                <TouchableOpacity onPress={()=>navigation.navigate('Notification')}>
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Notification')}>
                   <Text style={Styles.subText5}>Notifications</Text>
                 </TouchableOpacity>
               </View>
@@ -93,7 +105,7 @@ const Profile = ({navigation}) => {
               marginRight: 20,
             }}>
             <Text style={[Styles.subText4, {fontWeight: 'bold'}]}>Logout</Text>
-            <TouchableOpacity onPress={()=>navigation.navigate('SignUp Form')}>
+            <TouchableOpacity onPress={()=>handleLogout()}>
             
               <Logout name="logout" color={Color.golden} size={25} />
             </TouchableOpacity>
@@ -104,4 +116,4 @@ const Profile = ({navigation}) => {
   );
 };
 
-export default Profile;
+export default connect(null,{logout})(Profile);

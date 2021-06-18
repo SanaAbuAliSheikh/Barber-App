@@ -26,7 +26,7 @@ const {width, height} = Dimensions.get('window');
 const Footer = props => {
   const redirect = props.redirect;
   const navigation = useNavigation();
-  
+  console.log("_______________________",props);
   return (
       <TouchableOpacity
         // onPress={() =>  props.submit ? props.submitValue ? navigation.navigate(redirect) : null : null}
@@ -34,8 +34,11 @@ const Footer = props => {
         onPress={
           (props.type&&props.category)?
             ()=>navigation.navigate(redirect,{type:props.type, category:props.category})
+          :(
+          (props.data)?
+            ()=>navigation.navigate(redirect,{data:props.data})
           :
-          ()=>navigation.navigate(redirect)
+          ()=>navigation.navigate(redirect))
         }
         style={{
           display: 'flex',

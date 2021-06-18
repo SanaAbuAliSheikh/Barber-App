@@ -57,12 +57,12 @@ const Header = props => {
             }}>
             <Image
               source={require('../../assets/images/logo.png')}
-              style={{width: 80, height: 98}}></Image>
+              style={{width: 60, height: 78}}></Image>
           </View>
         )}
         <View
           style={{
-            width: '90%',
+            width: '95%',
             marginLeft: 20,
             marginRight: 20,
           }}>

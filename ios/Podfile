@@ -18,6 +18,8 @@ target 'BarberApp' do
 
   pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
 
+  pod 'RNPaypal', :path => '../node_modules/react-native-paypal'
+
   target 'BarberAppTests' do
     inherit! :complete
     # Pods for testing

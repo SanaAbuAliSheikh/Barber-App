@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   Dimensions,
+  TouchableOpacity
 } from 'react-native';
 
 import RadioForm , {RadioButton} from 'react-native-simple-radio-button';
@@ -17,6 +18,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 const {width, height} = Dimensions.get('window');
 
@@ -56,9 +59,44 @@ const Category = props => {
       value: 2,
     },
   ]);
+  const [shopExist, setShopExist] = useState(false);
+  const [showPlan, setShowPlan] = useState(false);
 
-  
+  useEffect(async()=>{
+    const shopId = await AsyncStorage.getItem('shop_id');
+    
+    if(shopId){   
+      console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",shopId); 
+    }
+    const no_of_shops = await AsyncStorage.getItem('no_of_shops');
+      console.log("jnn",no_of_shops);
+    if(no_of_shops!=0&&shopId){
+      setShopExist(true);
+      // setShowPlan(true);
+      console.log(shopExist);
+    } else{
+      setShopExist(false);
+
+    }
+    console.log(shopExist);
+
+    // setShowPlan(true)
+ },[]);
  
+ const onSubmit = async() => {
+  const shopId = await AsyncStorage.getItem('shop_id');
+  const no_of_shops = await AsyncStorage.getItem('no_of_shops');
+  console.log("on Submit",no_of_shops,shopId);
+  if(no_of_shops!=0&&shopId){
+    setShopExist( prev => true);
+    console.log(shopExist);
+  } else{
+    setShopExist(false);
+
+  }
+   const redirect = shopExist?"Shop Info":"Package Plan";
+  props.navigation.navigate(redirect,{type:barber[0].value==1?'barber':'beauty', category:shop[0].value==1?'physical':'remote'})
+ }
   return (
     <View style={Styles.background}>
       <Header name="SELECT CATEGORY & TYPE" type={1} heading={true} image={false} subheading= {false}/>
@@ -200,8 +238,36 @@ const Category = props => {
       
       {
         ((shop[0].value==0&&remote[0].value==0)||(barber[0].value==0&&beauty[0].value==0))?console.log("Category"):
-        <Footer redirect="Package Plan" category={shop[0].value==1?'physical':'remote'} type={barber[0].value==1?'barber':'beauty'} />
-
+        // <Footer redirect={showPlan?"Shop Info":"Package Plan"} category={shop[0].value==1?'physical':'remote'} type={barber[0].value==1?'barber':'beauty'} />
+        <TouchableOpacity
+        // onPress={() =>  props.submit ? props.submitValue ? navigation.navigate(redirect) : null : null}
+        
+        onPress={
+            ()=>onSubmit()
+          
+        }
+        style={{
+          display: 'flex',
+          width: '100%',
+          position: 'relative',
+          bottom: 30,
+        }}>
+        <View
+          style={{
+            alignSelf: 'flex-end',
+            borderColor: Color.golden,
+            borderWidth: 2,
+            borderRadius: 30,
+            marginLeft: 90,
+            marginRight: 50,
+            marginTop: 40,
+            alignItems: 'center',
+            width: 90,
+            padding: 10,
+          }}>
+          <Icon2 name="chevron-right" color={'white'} size={20} />
+        </View>
+      </TouchableOpacity>
       }
 
     </View>

@@ -1,27 +1,26 @@
 import axios from 'axios';
-import { URL, config, headers } from '../utils/Static';
+import api from '../utils/api';
+import {config, URL} from '../utils/Static';
+import setAuthToken from '../utils/setAuthToken'
 import { ToastAndroid } from 'react-native';
-import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR } from './types';
+import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL } from './types';
+import AsyncStorage from '@react-native-community/async-storage';
 
 //REGISTER OWNER
-export const register_owner = ({firstName,lastName,email,password,image}) => async dispatch => {
-    const body = JSON.stringify({firstName,lastName,email,password,role:'OWNER',image})
-   
-    console.log(config);
+export const register_owner = ({firstname,lastname,email,password,image}) => async dispatch => {
+    const body = JSON.stringify({firstname,lastname,email,password,role:'OWNER',image})
+   console.log("body",body);
     try{
-        const res = await axios.post(`${URL}/api/users/signup`,body, config)
-        console.log(res);
-
-        // if(!res.status){
-        //     ToastAndroid.show(res.error, ToastAndroid.SHORT)
-        // }
+        const res = await api.post('/users/signup',body)
+        console.log("hit", res.data);
         dispatch({
             type: OWNER_SUCCESS,
-            payload: res
+            payload: res.data&&res.data
         })
         
     }catch(err){
         console.log(err);
+        ToastAndroid.show(err, ToastAndroid.SHORT);
         dispatch({
             type: OWNER_FAIL
         })
@@ -29,20 +28,20 @@ export const register_owner = ({firstName,lastName,email,password,image}) => asy
 }
 
 //REGISTER SHOP
-export const register_shop = ({owner,title,work_type,plan,shop_type,description,location,from,to,address,services,images,no_of_employees}) => async dispatch => {
+export const register_shop = ({owner,title,work_type,plan,shop_type,location,address,images,services,country,zip_code}) => async dispatch => {
     
-    const body = JSON.stringify({owner,title,work_type,plan,shop_type,description,location,from,to,address,services,images,no_of_employees})
     
+    const a= await AsyncStorage.getItem('owner-token');
+    console.log(api.defaults.headers.common['Authorization']);
+    const body = JSON.stringify({owner,title,work_type,plan:"607a61a195aa091540cd1d3d",shop_type,location,from:'9:00am',to:'6:00pm',address,services,images,no_of_employees:"10",country,zip_code})
+    console.log(body);
     try{
-        const res = await axios.post(`${URL}/api/shops`,body, headers)
-        console.log(res);
+        const res = await api.post('/shops',body)
+        console.log(res.data);
 
-        if(!res.status){
-            ToastAndroid.show(res.error, ToastAndroid.SHORT)
-        }
         dispatch({
             type: SHOP_SUCCESS,
-            payload: res.response.token
+            payload: res.data.shop_id
         })
         
     }catch(err){
@@ -54,20 +53,17 @@ export const register_shop = ({owner,title,work_type,plan,shop_type,description,
 }
 
 //REGISTER EMPLOYEES
-export const register_employee = ({shop,name,description,type,services}) => async dispatch => {
+export const register_employee = ({shop,name,type,phone,services}) => async dispatch => {
     
-    const body = JSON.stringify({shop,name,description,type,services})
-    
+    const body = JSON.stringify({shop,name,description:'employee',phone_no:phone,type,services})
+    console.log(body);
     try{
-        const res = await axios.post(`${URL}/api/employees/register`,body, headers)
-        console.log(res);
+        const res = await api.post('/employees/register',body)
+        console.log(res.data);
 
-        if(!res.status){
-            ToastAndroid.show(res.error, ToastAndroid.SHORT)
-        }
         dispatch({
             type: EMPLOYEE_SUCCESS,
-            payload: res.response.token
+            payload: res.data
         })
         
     }catch(err){
@@ -82,12 +78,12 @@ export const register_employee = ({shop,name,description,type,services}) => asyn
 export const get_plans = () => async dispatch => {
     try{
         
-        const res = await axios.get(`${URL}/api/plans`)
+        const res = await api.get(`/plans`)
         console.log(res)
 
         dispatch({
             type: GET_PLAN_SUCCESS,
-            payload: res
+            payload: res.data
         })
         
     }catch(err){
@@ -98,24 +94,86 @@ export const get_plans = () => async dispatch => {
     }
 }
 
-//GET SERVICES
-export const get_services = () => async dispatch => {
+//GET APPOINTMENTS
+export const get_appointment = () => async dispatch => {
     try{
         
-        const res = await axios.get(`${URL}/api/services`,{
-            headers:headers
-        })
+        const res = await api.get(`/bookings/me`)
         console.log(res)
 
         dispatch({
-            type: GET_SERVICE_SUCCESS,
+            type: GET_APPOINTMENT_SUCCESS,
             payload: res
         })
         
     }catch(err){
         console.warn(err.message)
         dispatch({
-            type: GET_SERVICE_FAIL
+            type: GET_APPOINTMENT_FAIL
+        })
+    }
+}
+
+//GET SERVICES
+export const get_services = () => async dispatch => {
+    try{
+        const res = await api.get(`/services`)
+        console.log(res.data)
+
+        dispatch({
+            type: GET_SERVICE_SUCCESS,
+            payload: res.data
+        })
+        
+    }catch(err){
+        console.warn(err)
+        // ToastAndroid.show(err, ToastAndroid.SHORT)
+         
+        // dispatch({
+        //     type: GET_SERVICE_FAIL
+        // })
+    }
+}
+
+//GET SHOP
+export const get_shop = (shopId) => async dispatch => {
+    try{
+        console.log("shop is here",shopId);
+        const res = await api.get(`/shops/${shopId}`)
+        console.log('res.data',res.data);
+
+        dispatch({
+            type: GET_SHOP_SUCCESS,
+            payload: res.data
+        })
+        
+    }catch(err){
+        console.warn(err)
+        ToastAndroid.show(err, ToastAndroid.SHORT)
+         
+        dispatch({
+            type: GET_SHOP_FAIL
+        })
+    }
+}
+
+//GET ALL SHOP
+export const get_owner_shops = () => async dispatch => {
+    try{
+        const res = await api.get(`/shops/me`)
+        console.log('res.data',res.data);
+
+        dispatch({
+            type: GET_OWNER_SHOPS_SUCCESS,
+            payload: res.data
+        })
+        
+    }catch(err){
+        console.warn(err)
+        ToastAndroid.show(err, ToastAndroid.SHORT)
+         
+        dispatch({
+            type: GET_OWNER_SHOPS_FAIL
         })
     }
 }
@@ -124,23 +182,23 @@ export const get_services = () => async dispatch => {
 export const login_owner = ({email, password}) => async dispatch => {
     
     const body = JSON.stringify({email,password})
-
     try{
-        const res = await axios.post(`${URL}/api/auth/login`,body,config)
+        const res = await api.post(`/auth/login`,body,config)
         console.log(res);
         
-        if(res.status){
+        if(res){
             dispatch({
                 type: LOGIN_SUCCESS,
-                payload: res.response.token
+                payload: res.data
             })
-            dispatch(loadUser())
+            // dispatch(loadUser())
         }
-        else{
-            ToastAndroid.show(res.error, ToastAndroid.SHORT)
-        }
+        // else{
+        //     ToastAndroid.show(res.error, ToastAndroid.SHORT)
+        // }
         
     }catch(err){
+        console.log(err);
         dispatch({
             type: LOGIN_FAIL
         })
@@ -150,10 +208,10 @@ export const login_owner = ({email, password}) => async dispatch => {
 //FORGOT PASS
 export const forgot_pass = ({email}) => async dispatch => {
     const body = JSON.stringify({email})
-
+console.log(body);
     try{
 
-        const res = await axios.post(`${URL}/api/auth/forgotpassword`,body,config)
+        const res = await api.post('/auth/forgot',body)
         console.log(res);
         
         dispatch({
@@ -236,5 +294,45 @@ export const loadUser = () => async dispatch => {
         dispatch({
             type: AUTH_ERROR
         })
+    }
+}
+
+//GET JOBS
+export const get_jobs = () => async dispatch => {
+    const a= await AsyncStorage.getItem('token');
+    console.log(api.defaults.headers.common['Authorization']);
+    console.log(a);
+    try{
+        console.log("JOBSSSSSS CALLS");
+        const res = await api.get('/jobs/me')
+        console.log(res.data)
+
+        dispatch({
+            type: GET_JOB_SUCCESS,
+            payload: res.data
+        })
+        
+    }catch(err){
+        console.warn(err)
+        dispatch({
+            type: GET_JOB_FAIL
+        })
+    }
+}
+
+//CREATE JOBS
+export const create_jobs = ({shop,name,description,email,type, area, packages,experience}) => async dispatch => {
+    
+    const body = JSON.stringify({shop,'title':name,description,email,type,area, 'package':packages,experience})
+    console.log(body);
+    try{
+        console.log("JOBSSSSSS CREATE");
+        const res = await api.post('/jobs/create', body)
+        console.log(res.data)
+
+        dispatch(get_jobs());
+    }catch(err){
+        console.warn(err)
+       
     }
 }

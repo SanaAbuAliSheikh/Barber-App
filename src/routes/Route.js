@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {View, Text} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -28,6 +28,12 @@ import Services from '../screens/authentication/Services';
 import Payment from '../screens/authentication/Payment';
 import ForgotPass from '../screens/authentication/ForgotPass';
 import Notification from '../screens/notification/notifiy';
+
+import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
+import EmployeeDetails from '../screens/authentication/EmployeeDetails';
+import DaysAndTime from '../screens/authentication/DaysAndTime';
+import TotalShops from '../screens/home/TotalShops';
 
 
 const Stack = createStackNavigator();
@@ -89,37 +95,74 @@ function MyTabs() {
   );
 }
 
-function Routes() {
+function Routes(props) {
+  const getAsycToken = async() => {
+    var token = await AsyncStorage.getItem('token')
+    
+    if(token){
+      
+      console.log(":");
+    } else{
+      console.log(":::::::");
+    }
+  }
+  useEffect(async()=>{
+    await getAsycToken();
+    
+  },[])
+
+  const {isToken} = props;
+
+  const isAuthenticated=useSelector(state=>state.auth.user);
+  console.log(isAuthenticated, props);
+  
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          
         }}
+        mode="modal"
+        initialRouteName={isToken||isAuthenticated?"All Shop":"SignUp Form"}>
       
-        mode="modal">
-        <Stack.Screen
-          name="SignUp Form"
-          component={BarberDetailsForm}></Stack.Screen>
-        <Stack.Screen name="Login" component={Login}></Stack.Screen>
-        <Stack.Screen name="Forgot Password" component={ForgotPass}></Stack.Screen>
+        {
+          isToken || isAuthenticated ? (
+            <>
+              <Stack.Screen name="All Shops" component={TotalShops}></Stack.Screen>
+              <Stack.Screen name="Tab Menu" component={MyTabs}></Stack.Screen>
+              <Stack.Screen name="Notification" component={Notification}></Stack.Screen> 
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="SignUp Form"
+                component={BarberDetailsForm}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen>
+              <Stack.Screen name="Forgot Password" component={ForgotPass}></Stack.Screen>
 
-        <Stack.Screen name="Account" component={Account}></Stack.Screen>
-        <Stack.Screen name="Category" component={Category}></Stack.Screen>
-        <Stack.Screen name="Shop Info" component={ShopInfo}></Stack.Screen>
-        <Stack.Screen name="Services" component={Services}></Stack.Screen>
+              <Stack.Screen name="Account" component={Account}></Stack.Screen>
+              <Stack.Screen name="Category" component={Category}></Stack.Screen>
+              <Stack.Screen name="Shop Info" component={ShopInfo}></Stack.Screen>
+              <Stack.Screen name="Shop Day&Time" component={DaysAndTime}></Stack.Screen>
 
-        <Stack.Screen name="Employee Info" component={Employee}></Stack.Screen>
-        <Stack.Screen name="Images" component={Images}></Stack.Screen>
-        <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
+              <Stack.Screen name="Services" component={Services}></Stack.Screen>
 
-        <Stack.Screen
-          name="Package Plan"
-          component={PackagePlan}></Stack.Screen>
+              <Stack.Screen name="Employee Info" component={Employee}></Stack.Screen>
+              <Stack.Screen name="Employee Details" component={EmployeeDetails}></Stack.Screen>
 
-        <Stack.Screen name="Notification" component={Notification}></Stack.Screen>      
-        <Stack.Screen name="Tab Menu" component={MyTabs}></Stack.Screen>
+              <Stack.Screen name="Images" component={Images}></Stack.Screen>
+              <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
+
+              <Stack.Screen
+                name="Package Plan"
+                component={PackagePlan}></Stack.Screen>
+
+            </>
+            
+          )
+        }
+             
+
       </Stack.Navigator>
     </NavigationContainer>
   );
