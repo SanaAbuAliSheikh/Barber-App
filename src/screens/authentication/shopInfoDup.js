@@ -33,7 +33,7 @@ import {register_shop} from '../../actions/auth';
 import {connect} from 'react-redux';
 
 const {width, height} = Dimensions.get('window');
-const ShopInfo = props => {
+const ShopInfoDup = props => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [addressData, setAddressData] = useState([]);
   const [owner, setOwner] = useState([]);
@@ -53,8 +53,6 @@ const ShopInfo = props => {
   const [error, setError] = useState('');
 
 
-  const {category, type, id} = props.route.params;
-  console.log(category, type, id);
 
   const getAddress = async text => {
     setAddress(text)
@@ -118,16 +116,6 @@ const ShopInfo = props => {
     }
     return true;
   };
-
-  const onSubmit = async () => {
-    const {category, type, id} = props.route.params;
-    if(validation()){
-      console.log(category, type, id,name, email, phone, address, zipCode, country);
-      
-      await props.register_shop({owner,title:name,work_type:type,plan:id,shop_type:category,address:address,location,from,to,no_of_employees})
-      // props.navigation.navigate('Services');
-    }
-  }
 
   const renderItem = ({item, index}) => {
     console.log(item.description);
@@ -225,7 +213,6 @@ const ShopInfo = props => {
               placeholder="Enter Shop Phone"
               placeholderTextColor='#7d7d7d'
               style={[Styles1.TextInputStyle,{borderBottomColor: phone? Color.whiteColor:'#7d7d7d',}]}
-              // onChangeText={(text)=>setPhone(text)}
               onChangeText={
                 text => 
                   {
@@ -236,9 +223,9 @@ const ShopInfo = props => {
                 
                 }
               }
-              value={phone}
               keyboardType="numeric"
               maxLength={14}
+              value={phone}
               ></TextInput>
           </View>
           <View style={{flexDirection: 'row', margin: 20}}>
@@ -428,7 +415,7 @@ const ShopInfo = props => {
       </ScrollView>
       { name!='' && email!='' && phone!='' && address!='' && zipCode!='' && country!='' && fromDay!='' && toDay!='' &&
       
-         <Footer data={{name,email,phone,address,zipCode,country,lat,long,category, type, id, fromDay, toDay}} redirect="Shop Day&Time" />
+         <Footer data={{name,email,phone,address,zipCode,country,lat,long,fromDay, toDay}} redirect="Shop Day&Time Dup" />
       }
       {/* <Footer redirect="Services" /> */}
     </View>
@@ -438,4 +425,4 @@ const ShopInfo = props => {
 const mapStateToProps = state => ({
   shop: state.auth.shop
 });
-export default connect(mapStateToProps, {register_shop})(ShopInfo);
+export default connect(mapStateToProps, {register_shop})(ShopInfoDup);

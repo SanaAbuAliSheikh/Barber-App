@@ -3,7 +3,7 @@ import api from '../utils/api';
 import {config, URL} from '../utils/Static';
 import setAuthToken from '../utils/setAuthToken'
 import { ToastAndroid } from 'react-native';
-import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL } from './types';
+import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS } from './types';
 import AsyncStorage from '@react-native-community/async-storage';
 
 //REGISTER OWNER
@@ -52,6 +52,67 @@ export const register_shop = ({owner,title,work_type,plan,shop_type,location,add
     }
 }
 
+//EDIT SHOP
+export const edit_shop = ({images}) => async dispatch => {
+
+    const shop = await AsyncStorage.getItem('shop_id');
+    const body = JSON.stringify({images})
+    console.log(body);
+    console.log(`shops/edit/${shop}`);
+    try{
+        const res = await api.get(`/shops/edit/${shop}`,{images})
+        console.log("resp",res.data);
+
+        dispatch(get_shop(shop));
+        
+    }catch(err){
+        console.log(err);
+        
+    }
+}
+
+//EDIT SHOP Info
+export const edit_shopInfo = ({shop}) => async dispatch => {
+
+    const shopId = await AsyncStorage.getItem('shop_id');
+    // let shops = shop.shop;
+
+    // const body = JSON.stringify({shop})
+    console.log("EDIT SHOPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",shop);
+    console.log(`shops/edit/${shopId}`);
+    try{
+        const res = await api.post(`/shops/edit/${shopId}`,shop)
+        console.log("resp",res);
+
+        dispatch(get_shop(shopId));
+        
+    }catch(err){
+        console.log(err);
+        
+    }
+}
+
+//EDIT SHOP Info
+export const edit_shopInfos = ({services}) => async dispatch => {
+
+    const shopId = await AsyncStorage.getItem('shop_id');
+    // let shops = shop.shop;
+
+    // const body = JSON.stringify({shop})
+    console.log("EDIT SHOPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",services);
+    console.log(`shops/edit/${shopId}`);
+    try{
+        const res = await api.post(`/shops/edit/${shopId}`,{"services":services})
+        console.log("resp",res);
+
+        dispatch(get_shop(shopId));
+        
+    }catch(err){
+        console.log(err);
+        
+    }
+}
+
 //REGISTER EMPLOYEES
 export const register_employee = ({shop,name,type,phone,services}) => async dispatch => {
     
@@ -59,12 +120,14 @@ export const register_employee = ({shop,name,type,phone,services}) => async disp
     console.log(body);
     try{
         const res = await api.post('/employees/register',body)
-        console.log(res.data);
+        console.log("#####################################################____________________________________________",res.data);
 
         dispatch({
             type: EMPLOYEE_SUCCESS,
             payload: res.data
         })
+
+        dispatch(get_shop(shop))
         
     }catch(err){
         console.log(err);
@@ -96,21 +159,40 @@ export const get_plans = () => async dispatch => {
 
 //GET APPOINTMENTS
 export const get_appointment = () => async dispatch => {
+    const shopId = await AsyncStorage.getItem('shop_id');
+    console.log("BOOKINGSSSSSSSSSS",shopId);
     try{
         
-        const res = await api.get(`/bookings/me`)
-        console.log(res)
+        const res = await api.get(`/bookings/shop/${shopId}`)
+        console.log("appointmentsss today",res.data)
 
         dispatch({
             type: GET_APPOINTMENT_SUCCESS,
-            payload: res
+            payload: res.data
         })
         
     }catch(err){
-        console.warn(err.message)
-        dispatch({
-            type: GET_APPOINTMENT_FAIL
-        })
+        console.warn(err)
+       
+    }
+}
+
+//STATUS APPOINTMENTS
+export const status_appointment = ({bookingId,status}) => async dispatch => {
+    
+    console.log("BOOKINGSSSSSSSSSS STATUS");
+    const body = JSON.stringify({"booking_id":bookingId,status})
+    console.log(body);
+    try{
+        
+        const res = await api.post(`/bookings/status`,{"booking_id":bookingId,status})
+        console.log("appointmentsss today",res.data)
+
+        dispatch(get_appointment())
+        
+    }catch(err){
+        console.warn(err)
+       
     }
 }
 
@@ -159,6 +241,8 @@ export const get_shop = (shopId) => async dispatch => {
 
 //GET ALL SHOP
 export const get_owner_shops = () => async dispatch => {
+    console.log("get owner shop");
+      console.log(api.defaults.headers.common['Authorization']);
     try{
         const res = await api.get(`/shops/me`)
         console.log('res.data',res.data);
@@ -170,18 +254,19 @@ export const get_owner_shops = () => async dispatch => {
         
     }catch(err){
         console.warn(err)
-        ToastAndroid.show(err, ToastAndroid.SHORT)
+        // ToastAndroid.show(err, ToastAndroid.SHORT)
          
-        dispatch({
-            type: GET_OWNER_SHOPS_FAIL
-        })
+        // dispatch({
+        //     type: GET_OWNER_SHOPS_FAIL
+        // })
     }
 }
 
 //LOGIN OWNER
-export const login_owner = ({email, password}) => async dispatch => {
+export const login_owner = ({email, password, deviceId, deviceType}) => async dispatch => {
     
-    const body = JSON.stringify({email,password})
+    const body = JSON.stringify({email,password, deviceId, deviceType});
+    console.log("body of login", body);
     try{
         const res = await api.post(`/auth/login`,body,config)
         console.log(res);
@@ -336,3 +421,25 @@ export const create_jobs = ({shop,name,description,email,type, area, packages,ex
        
     }
 }
+
+//GET NOTIFICATION
+export const get_notifications = () => async dispatch => {
+    const shopId = await AsyncStorage.getItem('shop_id')
+    const body = JSON.stringify({'shop_id':shopId});
+    console.log("ppppppppppppppppppppppppppppppppppp",body);
+    try{
+        
+        const res = await api.post(`/notifications/shop`,{'shop_id':shopId})
+        console.log('NOTIFICATION))))))))',res.data);
+
+        dispatch({
+            type: GET_NOTIFICATION_SUCCESS,
+            payload: res.data
+        })
+        
+    }catch(err){
+        console.warn(err)
+        
+    }
+}
+

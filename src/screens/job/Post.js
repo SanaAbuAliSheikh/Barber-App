@@ -284,7 +284,7 @@ const Post = (props) => {
       </TouchableOpacity>
       <Text style={Styles.subText4}> Job Post</Text>
       <FlatList
-        data={jobPosts&&jobPosts}
+        data={props.jobDetails&&props.jobDetails.data}
         renderItem={renderItem}></FlatList>
 
       <Modal visible={addPost} transparent={true}>

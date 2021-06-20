@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  ToastAndroid,
 } from 'react-native';
 
 import RadioForm , {RadioButton} from 'react-native-simple-radio-button';
@@ -58,9 +59,11 @@ const Payment = props => {
 
   const requestPayment = async() => {
     const ownerToken = await AsyncStorage.getItem('owner-token');
+    console.log(ownerToken,"!!!!!!!!!!!!!!!");
    
     if(ownerToken){
       api.defaults.headers.common['Authorization'] = `Bearer ${ownerToken}`;
+      console.log(api.defaults.headers.common['Authorization']);
     }
     stripe.setOptions({
       publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
@@ -68,31 +71,32 @@ const Payment = props => {
     return stripe
       .paymentRequestWithCardForm()
       .then(async(stripeTokenInfo) => {
-        console.log(stripeTokenInfo);
+        console.log("__________________",stripeTokenInfo);
         const body={
-          "plan": shop,
+          "plan": "60ca19a855ed4d0022d8cc26",
           "payment_method": "stripe",
           "card_expiry":"11/2021",
           "card_number":"4242424242424242",
           "cvv":"424"
         }
         
-        let body2 = JSON.stringify({body});
+        let body2 = JSON.stringify(body);
         
         try{
-          console.log("hitttt",body);
-          const res=await api.post('/payments/buy',body2)
+          console.log("hitttt",body2);
+          const res=await api.post('/payments/buy',body)
           console.log(res.data,"res");
           
         }
         catch(err){
           console.log(err);
-          setError(err)
+          setError("Unsuccessful Payment")
 
         }
       }).then(()=>{
         console.log("successfuly");
-        // props.navigation.navigate('Home')
+        ToastAndroid.show("Payment Done Successfully!", ToastAndroid.SHORT)
+        props.navigation.navigate('Home')
       })
       .catch(error => {
         setError(error)

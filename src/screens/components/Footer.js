@@ -35,8 +35,8 @@ const Footer = props => {
           (props.type&&props.category)?
             ()=>navigation.navigate(redirect,{type:props.type, category:props.category})
           :(
-          (props.data)?
-            ()=>navigation.navigate(redirect,{data:props.data})
+          (props.data||props.daysWiseTime)?
+            ()=>navigation.navigate(redirect,{data:props.data,daysWiseTime:props.daysWiseTime})
           :
           ()=>navigation.navigate(redirect))
         }

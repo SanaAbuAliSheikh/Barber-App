@@ -37,6 +37,7 @@ const TotalShops = props => {
     return (
       <TouchableOpacity onPress={()=>handleSingleShop(index)}>
         <View
+          key={index}
           style={{
             marginLeft: 20,
             marginRight: 20,
@@ -125,16 +126,21 @@ const TotalShops = props => {
               width: 80,
               height: 80,
               borderRadius: 40,
-            }}></View>
+            }}>
+              <Image source={{uri:props.shops&&props.shops[0]&&props.shops[0].owner&&props.shops[0].owner.image}} style={{width: 80,borderRadius: 40,
+              height: 80,}}/>
+            </View>
         </View>
         <View style={{marginTop: 10, marginBottom: 20}}>
           <Text style={[Styles.subText8, {fontWeight: 'bold'}]}>
-            Mr. John Doe
+            {props.shops&&props.shops[0]&&props.shops[0].owner&&props.shops[0].owner.firstname}
+            {'  '}{props.shops&&props.shops[0]&&props.shops[0].owner&&props.shops[0].owner.lastname}
           </Text>
         </View>
       </View>
+      <Text style={[Styles.headerText2, {fontWeight: 'bold',textAlign:'left',marginLeft:20, marginRight:20,color:Color.whiteColor,fontSize:20}]}>SELECT A SHOP</Text>
 
-      <FlatList data={props.shops} renderItem={renderItem} />
+      <FlatList data={props.shops} renderItem={renderItem} keyExtractor={(item,index)=>index.toString()}/>
     </View>
   );
 };

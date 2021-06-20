@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Image,
   Dimensions,
+  Platform
 } from 'react-native';
 
 import Styles from '../../styles/Styles';
@@ -23,6 +24,7 @@ import Header from '../components/Header';
 import {login_owner} from '../../actions/auth';
 import {connect} from 'react-redux';
 
+import { getUniqueId, getManufacturer } from 'react-native-device-info';
 
 const {width, height} = Dimensions.get('window');
 class Login extends Component {
@@ -56,19 +58,26 @@ class Login extends Component {
   }
 
   onSubmit = async() =>{
-    // if(this.validation()){
+
+    if(this.validation()){
+      //
+      const deviceId = getUniqueId();
+      console.log("deviceId", deviceId);
+      console.log("Platform", Platform.OS);
+
+      
       const {email, password} = this.state;
-      await this.props.login_owner({email,password})
+      await this.props.login_owner({email,password,"deviceId":deviceId,"deviceType":Platform.OS})
       console.log("___________________________________");
       this.props.navigation.navigate('All Shops');
-    // }
+    }
   }
   render() {
     return (
       <View style={Styles.background}>
           <Header type={2} name="LOGIN" subname="Please enter your personal info to Login on the platform." heading={true} image={true} subheading= {true}/>
           
-        {/* <Text style={Styles1.error}>{this.state.error}</Text> */}
+        <Text style={Styles1.error}>{this.state.error}</Text>
 
           <View style={{justifyContent: 'center'}}>
             <View style={{flexDirection: 'row', margin: 20}}>
@@ -98,8 +107,8 @@ class Login extends Component {
               <TextInput
                 placeholder="Enter Password"
                 placeholderTextColor={this.state.password?Color.whiteColor:Color.lightGrey}
-                placeholderStyle={{color:'red'}}
-                secureTextEntry={this.state.encryptedPass}
+                // placeholderStyle={{color:'red'}}
+                secureTextEntry={(this.state.password.length <= 0 )? false : this.state.encryptedPass}
                 value={this.state.password}
                 onChangeText={(text)=>this.setState({password:text})}
                 style={[Styles1.TextInputStyle,{
@@ -125,12 +134,13 @@ class Login extends Component {
             </View>
           </View>
 
-          <TouchableOpacity onPress={this.onSubmit}>
+          
             <View
               style={Styles.button}>
-              <Text style={Styles1.subText1}>Login</Text>
+                <TouchableOpacity onPress={this.onSubmit}>
+              <Text style={Styles1.subText1}>Login</Text></TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          
 
           <View style={{flexDirection: 'row',justifyContent:'center',marginTop:20}}>
             <Text style={Styles2.subText}>Don't have an account? </Text>

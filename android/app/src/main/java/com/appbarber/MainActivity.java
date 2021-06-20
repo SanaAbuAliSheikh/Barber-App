@@ -1,4 +1,4 @@
-package com.barberapp;
+package com.appbarber;
 
 import com.facebook.react.ReactActivity;
 

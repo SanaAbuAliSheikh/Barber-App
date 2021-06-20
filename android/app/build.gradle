@@ -131,7 +131,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.barberapp"
+        applicationId "com.appbarber"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

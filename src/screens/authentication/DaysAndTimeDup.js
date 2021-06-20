@@ -11,8 +11,6 @@ import Color from '../../utils/Colors.json';
 import Down from 'react-native-vector-icons/Entypo';
 import Logout from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProfileIcon from 'react-native-vector-icons/FontAwesome5';
-import {logout} from '../../actions/auth';
-import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -20,9 +18,12 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 
+import {edit_shopInfo} from '../../actions/auth';
+import {connect} from 'react-redux';
+
 const {width, height} = Dimensions.get('window');
 
-const DaysAndTime = props => {
+const DaysAndTimeDup = props => {
 
   const [date, setDate] = useState(new Date(1598051730000));
   const [date1, setDate2] = useState(new Date(1598051730000));
@@ -47,36 +48,36 @@ const DaysAndTime = props => {
     console.log(day, from1, to1);
     if(from){
       if(from1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:""}
+        daysDataInOrderOther[index]= {day:day,from:currentDate.toString().toString(),to:""}
 
       } 
       if(!from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:to1}
+        daysDataInOrderOther[index]= {day:day,from:currentDate.toString(),to:to1}
 
       }
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:to1}
+        daysDataInOrderOther[index]= {day:day,from:currentDate.toString(),to:to1}
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:""}
+        daysDataInOrderOther[index]= {day:day,from:currentDate.toString(),to:""}
 
       }
     }
 
     if(to){
       if(to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate.toString()}
 
       } 
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate.toString()}
       }
       if(from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate.toString()}
 
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate.toString()}
 
       }
     }
@@ -122,7 +123,7 @@ const DaysAndTime = props => {
     let endIndex=0;
     if (fromDayIndex == toDayIndex) {
       endIndex = toDayIndex - 1;
-    } else if(toDayIndex==daysData.length-1 ){
+    } else if(toDayIndex==daysData.length-1){
       endIndex = toDayIndex;
       console.log("@@@@@$%%%%%%%%%%in it",endIndex);
 
@@ -157,7 +158,7 @@ const DaysAndTime = props => {
           i = -1;
         }
       }
-      if (fromDayIndex == toDayIndex || (endIndex == 6&& toDayIndex!=5)) {
+      if (fromDayIndex == toDayIndex || endIndex == 6) {
         console.log(daysData[i]);
   
         console.log("aa"),
@@ -190,6 +191,18 @@ const DaysAndTime = props => {
       </View>
     );
   };
+
+  const onSubmit = async() =>{
+   
+
+    const {address, country, email, fromDay, lat, long, name, phone, toDay, zipCode} = props.route.params.data;
+    const shop = {
+        address, country, email, "from":fromDay, lat, long, "title":name, phone, "to":toDay, zipCode, "daysTimings":daysDataInOrderOther
+    }
+    console.log("Shop", shop);
+    await props.edit_shopInfo({shop})
+    props.navigation.navigate('Home');
+  }
   return (
     <View style={Styles.background1}>
       <Header
@@ -215,9 +228,38 @@ const DaysAndTime = props => {
           onChange={onChange}
         />
       )}
-      <Footer data={props.route.params.data}  redirect="Images" daysWiseTime={daysDataInOrderOther}/>
+      {/* <Footer data={props.route.params.data} redirect="Images" /> */}
+      <TouchableOpacity
+        onPress={
+            ()=>onSubmit()
+          
+        }
+        style={{
+          display: 'flex',
+          width: '100%',
+          position: 'relative',
+          bottom: 30,
+        }}>
+        <View
+          style={{
+            alignSelf: 'flex-end',
+            borderColor: Color.golden,
+            borderWidth: 2,
+            borderRadius: 30,
+            marginLeft: 90,
+            marginRight: 50,
+            marginTop: 40,
+            alignItems: 'center',
+            width: 90,
+            padding: 10,
+          }}>
+          <Down name="chevron-right" color={'white'} size={20} />
+        </View>
+      </TouchableOpacity>
+      
     </View>
   );
 };
 
-export default DaysAndTime;
+export default connect(null, {edit_shopInfo})(DaysAndTimeDup);
+

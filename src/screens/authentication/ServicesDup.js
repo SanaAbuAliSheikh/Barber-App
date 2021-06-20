@@ -21,13 +21,13 @@ import {Checkbox} from 'react-native-paper';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-import {get_services, register_shop} from '../../actions/auth';
+import {get_services, edit_shopInfos} from '../../actions/auth';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const {width, height} = Dimensions.get('window');
 
-const Services = props => {
+const ServicesDup = props => {
   const [selection, setSelection] = useState(false);
   const [ownerId, setOwnerId] = useState('');
   const [shopServices, setShopServices] = useState([]);
@@ -68,24 +68,14 @@ const Services = props => {
   
   useEffect( async()=>{
     await props.get_services();
-    // console.log(
-    //   "Props image foundddddddd",props.services.data[0].images
-    // );
-    const ownerId = await AsyncStorage.getItem('owner_id');
-
-    setOwnerId(ownerId);
-
-    console.log("propsiiiiiii",props.route.params.data);
-    console.log(ownerId);
-    console.log(shopServices);
+    
     setServices1(props.services);
  },[]);
 
  const submit = async() => {
-   const {name,email,phone,address,zipCode,country,lat,long,category, type, id, images,dayTimings} = props.route.params.data; 
-   console.log( images.length, ownerId, name, category, id , type, address, {location: {"type": "Point", "coordinates": [lat, long]}} , shopServices);
-    await props.register_shop({ dayTimings, owner:ownerId, title:name, work_type:category, plan:id , shop_type:type, address, location: {"type": "Point", "coordinates": [long, lat]}, images, services:shopServices,country, zip_code:zipCode})
-    props.navigation.navigate('Employee Info')
+     console.log(shopServices)
+   await props.edit_shopInfos({'services':shopServices})
+    props.navigation.navigate('Home')
   }
 
   const handleService = index => {
@@ -248,6 +238,6 @@ const Services = props => {
   );
 };
 const mapStateToProps = state => ({
-  services: state.auth.services
-});
-export default connect(mapStateToProps, {get_services,register_shop})(Services);
+    services: state.auth.services
+  });
+export default connect(mapStateToProps, {get_services,edit_shopInfos})(ServicesDup);

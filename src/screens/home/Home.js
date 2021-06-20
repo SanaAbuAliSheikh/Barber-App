@@ -18,7 +18,7 @@ import Icon3 from 'react-native-vector-icons/Feather';
 import Color from '../../utils/Colors.json';
 import Styles from '../../styles/Styles';
 
-import {get_shop} from '../../actions/auth';
+import {get_shop, logout} from '../../actions/auth';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
@@ -76,7 +76,7 @@ const Home = (props) => {
   //     timings: '9:00 am - 5:00 pm',
   //   },
   // ]);
-  const [getEmpData, setGetEmpData] = useState(props.shopDetails.employees);
+  const [getEmpData, setGetEmpData] = useState(props.shopDetails?props.shopDetails.employees:[]);
   const [getEmpDataCopy, setGetEmpDataCopy] = useState(getEmpData);
   const [shop, setShop] = useState('');
 
@@ -105,7 +105,7 @@ const Home = (props) => {
             justifyContent: 'flex-end',
           }}>
           {/* <Text style={[Styles.subText7, {color: Color.golden}]}>SAVE</Text> */}
-          <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text>
+          {/* <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text> */}
         </View>
         {props.shopDetails&&props.shopDetails.employees&&(
         <View
@@ -126,13 +126,13 @@ const Home = (props) => {
                 borderRadius: 35,
               }}></View>
             <View>
-              <Text style={Styles.subText7}>{props.shopDetails.employees[empIndex].name}</Text>
+              <Text style={Styles.subText7}>{props.shopDetails&&props.shopDetails.employees[empIndex].name}</Text>
               <Text
                 style={[
                   Styles.subText9,
                   {marginTop: 10, color: Color.greyColor},
                 ]}>
-                Expertise : {props.shopDetails.employees[empIndex].type}
+                Expertise : {props.shopDetails&&props.shopDetails.employees[empIndex].type}
               </Text>
               <Text
                 style={[
@@ -152,7 +152,7 @@ const Home = (props) => {
           </View>
         </View>
         )}
-        {props.shopDetails.employees[empIndex + 1] && (
+        {props.shopDetails&&props.shopDetails.employees[empIndex + 1] && (
           <View>
             <View
               style={{
@@ -162,8 +162,7 @@ const Home = (props) => {
                 marginTop: 20,
                 justifyContent: 'flex-end',
               }}>
-              {/* <Text style={[Styles.subText7, {color: Color.golden}]}>SAVE</Text> */}
-              <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text>
+              {/* <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text> */}
             </View>
             <View
               style={{
@@ -185,14 +184,14 @@ const Home = (props) => {
                   }}></View>
                 <View>
                   <Text style={Styles.subText7}>
-                    {props.shopDetails.employees[empIndex + 1].name}
+                    {props.shopDetails&&props.shopDetails.employees[empIndex + 1].name}
                   </Text>
                   <Text
                     style={[
                       Styles.subText9,
                       {marginTop: 10, color: Color.greyColor},
                     ]}>
-                    Expertise : {props.shopDetails.employees[empIndex + 1].type}
+                    Expertise : {props.shopDetails&&props.shopDetails.employees[empIndex + 1].type}
                   </Text>
                   <Text
                     style={[
@@ -214,7 +213,7 @@ const Home = (props) => {
           </View>
         )}
 
-        {props.shopDetails.employees[empIndex + 2] && (
+        {/* {props.shopDetails&&props.shopDetails.employees[empIndex + 2] && (
           <View>
             <View
               style={{
@@ -224,7 +223,6 @@ const Home = (props) => {
                 marginTop: 20,
                 justifyContent: 'flex-end',
               }}>
-              {/* <Text style={[Styles.subText7, {color: Color.golden}]}>SAVE</Text> */}
               <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text>
             </View>
             <View
@@ -247,34 +245,34 @@ const Home = (props) => {
                   }}></View>
                 <View>
                   <Text style={Styles.subText7}>
-                    {props.shopDetails.employees[empIndex + 2].name}
+                    {props.shopDetails&&props.shopDetails.employees[empIndex + 2].name}
                   </Text>
                   <Text
                     style={[
                       Styles.subText9,
                       {marginTop: 10, color: Color.greyColor},
                     ]}>
-                    Expertise : {props.shopDetails.employees[empIndex + 2].expertise}
+                    Expertise : {props.shopDetails&&props.shopDetails.employees[empIndex + 2].expertise}
                   </Text>
                   <Text
                     style={[
                       Styles.subText9,
                       {marginTop: 10, color: Color.greyColor},
                     ]}>
-                    Availability : {props.shopDetails.employees[empIndex + 2].availability}
+                    Availability : {props.shopDetails&&props.shopDetails.employees[empIndex + 2].availability}
                   </Text>
                   <Text
                     style={[
                       Styles.subText9,
                       {marginTop: 10, color: Color.greyColor},
                     ]}>
-                    Shift Timings : {props.shopDetails.employees[empIndex + 2].timings}
+                    Shift Timings : {props.shopDetails&&props.shopDetails.employees[empIndex + 2].timings}
                   </Text>
                 </View>
               </View>
             </View>
           </View>
-        )}
+        )} */}
       </View>
     );
   };
@@ -282,8 +280,8 @@ const Home = (props) => {
   useEffect(async()=>{
     const shopId = await AsyncStorage.getItem('shop_id');
     await props.get_shop(shopId)
-
-    await console.log(props.shopDetails);
+    
+    await console.log('shop details',props.shopDetails);
 
   },[])
   return (
@@ -302,12 +300,16 @@ const Home = (props) => {
               width: 80,
               height: 80,
               borderRadius: 40,
-            }}></View>
+            }}>
+              <Image source={{uri:props.shopDetails&&props.shopDetails.owner&&props.shopDetails.owner.image}} style={{width: 80,
+              height: 80,}}/>
+            </View>
         </View>
         <View style={{marginTop: 10, marginBottom: 20}}>
           {/* <Text style={Styles.subText3}>Welcome</Text> */}
           <Text style={[Styles.subText8, {fontWeight: 'bold'}]}>
-            Mr. John Doe
+            {props.shopDetails&&props.shopDetails.owner&&props.shopDetails.owner.firstname}
+            {'  '}{props.shopDetails&&props.shopDetails.owner&&props.shopDetails.owner.lastname}
           </Text>
         </View>
 
@@ -339,11 +341,12 @@ const Home = (props) => {
               marginRight: width * 0.12,
               marginBottom: -5,
             }}>
-            <Icon name="star" color="#F2AA4CFF" size={20} />
-            <Icon name="star" color="#F2AA4CFF" size={20} />
-            <Icon name="star" color="#F2AA4CFF" size={20} />
-            <Icon name="star" color="#F2AA4CFF" size={20} />
-            <Icon name="star" color="#F2AA4CFF" size={20} />
+              {props.shopDetails&&[1,2,3,4,5].map((item,index)=>{
+                return(
+                  <Icon name={props.shopDetails.averageRating<index+1?"star-outlined":"star"} color="#F2AA4CFF" size={20} />
+                )
+              })}
+            
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -385,6 +388,7 @@ const Home = (props) => {
                 <Text style={[Styles.subText7, {marginBottom: 10}]}>
                   LOCATION & HOURS
                 </Text>
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Shop Info Dup')}>
                 <Text
                   style={[
                     Styles.subText7,
@@ -392,6 +396,7 @@ const Home = (props) => {
                   ]}>
                   EDIT
                 </Text>
+                </TouchableOpacity>
               </View>
 
               <View>
@@ -448,6 +453,7 @@ const Home = (props) => {
                   justifyContent: 'space-between',
                 }}>
                 <Text style={[Styles.subText7, {marginBottom: 10}]}>PHOTOS</Text>
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Images Dup')}>
                 <Text
                   style={[
                     Styles.subText7,
@@ -455,6 +461,7 @@ const Home = (props) => {
                   ]}>
                   ADD PHOTOS
                 </Text>
+                </TouchableOpacity>
               </View>
 
               <View style={{backgroundColor: Color.darkgray}}>
@@ -506,7 +513,8 @@ const Home = (props) => {
                   justifyContent: 'space-between',
                 }}>
                 <Text style={[Styles.subText7]}>EMPLOYEES</Text>
-                {/* <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text> */}
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Employee Info Dup')}>
+                <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text></TouchableOpacity>
               </View>
               <View
                 style={{
@@ -532,7 +540,7 @@ const Home = (props) => {
               {
                props.shopDetails&&props.shopDetails.employees.length>0&& 
                <FlatList
-                data={[props.shopDetails.employees[empIndex]]}
+                data={[props.shopDetails&&props.shopDetails.employees[empIndex]]}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
               />
@@ -542,8 +550,9 @@ const Home = (props) => {
               
               <TouchableOpacity
                 onPress={() =>
-                  setEmpIndex(empIndex + 3 >= props.shopDetails.employees.length ? 0 : empIndex + 3)
-                }>
+                  { props.shopDetails&&
+                   ( empIndex + 2 >= props.shopDetails.employees.length ? setEmpIndex(0) : setEmpIndex(empIndex + 2)
+                )}}>
                 <View style={{alignItems: 'center', margin: 20}}>
                   <Icon1 name="plussquare" color={Color.darkGolden} size={40} />
                 </View>
@@ -566,6 +575,7 @@ const Home = (props) => {
               justifyContent: 'space-between',
             }}>
             <Text style={[Styles.subText7, {marginBottom: 10}]}>SERVICES</Text>
+            <TouchableOpacity onPress={()=>props.navigation.navigate("Services Dup")}>
             <Text
               style={[
                 Styles.subText7,
@@ -573,6 +583,7 @@ const Home = (props) => {
               ]}>
               EDIT
             </Text>
+            </TouchableOpacity>
           </View>
 
           {props.shopDetails&&props.shopDetails.services&&props.shopDetails.services.map((service, index) => {

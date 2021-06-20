@@ -25,8 +25,12 @@ import {
   GET_JOB_SUCCESS,
   GET_JOB_FAIL,
   GET_OWNER_SHOPS_SUCCESS,
+  GET_NOTIFICATION_SUCCESS,
+  GET_APPOINTMENT_SUCCESS
 } from '../actions/types';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios'
+import api from '../utils/api';
 
 const initialState = {
   user: null,
@@ -41,7 +45,9 @@ const initialState = {
   shop:[],
   jobs:[],
   plans:[],
-  allShops:[]
+  allShops:[],
+  notifications:[],
+  appointments:[]
 };
 
 export default function (state = initialState, action) {
@@ -90,6 +96,22 @@ export default function (state = initialState, action) {
         shop: payload,
       };
 
+    case GET_NOTIFICATION_SUCCESS:
+      return {
+        ...state,
+        ...payload,
+        loading: false,
+        notifications: payload,
+      };
+  
+    case GET_APPOINTMENT_SUCCESS:
+      return {
+        ...state,
+        ...payload,
+        loading: false,
+        appointments: payload,
+      }
+
     case GET_OWNER_SHOPS_SUCCESS:
       return {
         ...state,
@@ -100,6 +122,7 @@ export default function (state = initialState, action) {
       
 
     case LOGIN_SUCCESS:
+      api.defaults.headers.common['Authorization'] = `Bearer ${payload.token.toString()}`;
       AsyncStorage.setItem('token', payload.token.toString());
       return {
         ...state,
@@ -177,7 +200,7 @@ export default function (state = initialState, action) {
     case LOGIN_FAIL:
       case LOGOUT:
         AsyncStorage.removeItem('token');
-
+        AsyncStorage.removeItem('shop_id');
         return {
           ...state,
           isAuthenticated: false,

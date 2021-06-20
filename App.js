@@ -41,6 +41,7 @@ const App: () => Node = () => {
     }
   }
   useEffect(async()=>{
+    // Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',appId:'1:740597293776:android:863c226be014b4db63f4d5'})
   //   Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',
   // appId:'1:740597293776:android:b80dca5ec29672be63f4d5'});
     PushNotification.configure({

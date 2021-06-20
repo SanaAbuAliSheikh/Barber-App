@@ -34,7 +34,7 @@ import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const {width, height} = Dimensions.get('window');
-const Employee = props => {
+const EmployeeDup = props => {
   const [showServices, setShowServices] = useState(false);
   const [services, setServices] = useState([]);
   const [setSelection, setSetSelection] = useState(false);
@@ -53,6 +53,7 @@ const Employee = props => {
   const [fromDay, setFromDay] = useState('');
   const [daysData, setDaysData] = useState([{name:'Monday'},{name:'Tuesday'},{name:'Wednesday'},{name:'Thursday'},{name:'Friday'},{name:'Saturday'},{name:'Sunday'}]);
   const [toDayModal, setToDayModal] = useState(false);
+  const [shopId, setShopId] = useState('');
 
 
   const chooseImage = async () => {
@@ -162,7 +163,10 @@ const Employee = props => {
 
   useEffect(async() => {
     await props.get_services();
+    const shopId = await AsyncStorage.getItem('shop_id');
+    setShopId(shopId)
     props.services && setServices(props.services.data)
+
   }, []);
 
   const handleService = index => {
@@ -262,9 +266,10 @@ const Employee = props => {
     }
   }
 
-  const onSubmit = () => {
+  const onSubmit = async() => {
     if(validation()){
       const empData = {
+        shop:shopId,
         fileUri: fileUri,
         name: name,
         phone: phone,
@@ -273,8 +278,8 @@ const Employee = props => {
       }
       employees.push(empData)
       setEmployees(employees)
-
-      props.navigation.navigate('Employee Details', {empData : employees})
+      await props.register_employee(empData)
+      props.navigation.navigate('Home')
     }
     else{
       console.log("none");
@@ -520,26 +525,25 @@ const Employee = props => {
       </ScrollView>
 
       {/* <Footer redirect="Payment" /> */}
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent:'center',margin:20}}>
         <TouchableOpacity
           onPress={() => onSubmit()}
           style={{
             display: 'flex',
             width: '30%',
-            position: 'relative',
-            bottom: 30,
           }}
           >
           <View
             style={{
-              alignSelf: 'flex-end',
               borderColor: Color.golden,
               borderWidth: 2,
               borderRadius: 30,
               // marginLeft: 90,
-              // marginRight: 50,
-              marginTop: 40,
+              // marginRight: 50
               alignItems: 'center',
+              justifyContent:'center',
               width: 90,
               padding: 10,
             }}>
@@ -547,7 +551,7 @@ const Employee = props => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => addEmployee()}
           style={{
             display: 'flex',
@@ -568,11 +572,13 @@ const Employee = props => {
               width: 90,
               padding: 10,
             }}>
-            {/* <Icon2 name="chevron-right" color={'white'} size={20} /> */}
+            <Icon2 name="chevron-right" color={'white'} size={20} /> 
             <Text style={{color:Color.whiteColor}}>Next</Text>
 
           </View>
+        
         </TouchableOpacity>
+       */}
       </View>
 
       <Modal visible={showServices} transparent={true}>
@@ -755,5 +761,5 @@ const mapStateToProps = state => ({
   services: state.auth.services,
 });
 export default connect(mapStateToProps, {get_services, register_employee})(
-  Employee,
+  EmployeeDup,
 );

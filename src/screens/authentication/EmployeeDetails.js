@@ -46,15 +46,16 @@ const EmployeeDetails = props => {
   });
 
   const onSubmit = async() => {
-      // const {name, phone, fileUri, expertise,type} = props.route.params.empData;
+      const {name, phone, fileUri, services,type} = props.route.params.empData[0];
       // console.log(name, phone, expertise,type);
-      const emps = props.route.params.empData;
-      await props.register_employee({emps})
+      // const emps = props.route.params.empData[0];
+      const shop = await AsyncStorage.getItem('shop_id');
+      await props.register_employee({shop,name, phone, services,type})
 
       const no_of_shops = await AsyncStorage.getItem('no_of_shops');
       console.log(no_of_shops=="5");
 
-      no_of_shops=="1" ? props.navigation.navigate('Payment') : props.navigation.navigate('Category');
+      no_of_shops=="1" ? props.navigation.navigate('SignUp Form') : props.navigation.navigate('Category');
       let val = JSON.parse(no_of_shops);
       console.log(no_of_shops==5);
       AsyncStorage.setItem('no_of_shops',JSON.stringify(val-1));

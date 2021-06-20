@@ -31,13 +31,20 @@ const {width, height} = Dimensions.get('window');
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Images = (props) => {
+import {edit_shop} from '../../actions/auth';
+import {connect} from 'react-redux';
+
+const ImagesDup = (props) => {
     const [shopImages,setShopImages] = useState([]);
-    const [images,setImages] = useState([])
-    const {name,email,phone,address,zipCode,country,lat,long,category, type, id} = props.route.params.data; 
-    const {daysWiseTime} = props.route.params; 
+    const [images,setImages] = useState([]);
 
+    const onSubmit = async() => {
 
+        await props.edit_shop({images});
+        props.navigation.navigate("Home");
+        
+    }
+    
     const selectImage = () => {
         var newArr = [];
         var base64Arr = [];
@@ -86,10 +93,38 @@ const Images = (props) => {
                     ):null
                 }
             </View>
-            <Footer redirect="Services" data={{images,name,email,phone,address,zipCode,country,lat,long,category, type, id,"dayTimings":daysWiseTime}}/>
-
+            {/* <Footer redirect="Home" /> */}
+            <TouchableOpacity
+                
+                onPress={
+                    ()=>onSubmit()
+                
+                }
+                style={{
+                display: 'flex',
+                width: '100%',
+                position: 'relative',
+                bottom: 30,
+                }}>
+                <View
+                style={{
+                    alignSelf: 'flex-end',
+                    borderColor: Color.golden,
+                    borderWidth: 2,
+                    borderRadius: 30,
+                    marginLeft: 90,
+                    marginRight: 50,
+                    marginTop: 40,
+                    alignItems: 'center',
+                    width: 90,
+                    padding: 10,
+                }}>
+                <Icon2 name="chevron-right" color={'white'} size={20} />
+                </View>
+            </TouchableOpacity>
+            
         </View>
     )
 }
 
-export default Images
+export default connect(null, {edit_shop})(ImagesDup);

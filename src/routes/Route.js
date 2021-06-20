@@ -34,6 +34,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import EmployeeDetails from '../screens/authentication/EmployeeDetails';
 import DaysAndTime from '../screens/authentication/DaysAndTime';
 import TotalShops from '../screens/home/TotalShops';
+import ImagesDup from '../screens/authentication/ImagesDup';
+import shopInfoDup from '../screens/authentication/shopInfoDup';
+import DaysAndTimeDup from '../screens/authentication/DaysAndTimeDup';
+import EmployeeDup from '../screens/authentication/EmployeeDup';
+import ServicesDup from '../screens/authentication/ServicesDup';
 
 
 const Stack = createStackNavigator();
@@ -129,6 +134,17 @@ function Routes(props) {
           isToken || isAuthenticated ? (
             <>
               <Stack.Screen name="All Shops" component={TotalShops}></Stack.Screen>
+              <Stack.Screen name="Images Dup" component={ImagesDup}></Stack.Screen>
+              <Stack.Screen name="Shop Info Dup" component={shopInfoDup}></Stack.Screen>
+              <Stack.Screen name="Shop Day&Time Dup" component={DaysAndTimeDup}></Stack.Screen>
+              <Stack.Screen name="Services Dup" component={ServicesDup}></Stack.Screen>
+
+              <Stack.Screen name="Employee Info Dup" component={EmployeeDup}></Stack.Screen>
+              <Stack.Screen
+                name="SignUp Form"
+                component={BarberDetailsForm}></Stack.Screen>
+              <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
+
               <Stack.Screen name="Tab Menu" component={MyTabs}></Stack.Screen>
               <Stack.Screen name="Notification" component={Notification}></Stack.Screen> 
             </>

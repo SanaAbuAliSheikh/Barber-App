@@ -172,6 +172,7 @@ const Account = props => {
         password,
         image: fileUri&&fileUri.data,
       });
+      setError('');
       props.navigation.navigate('Category');
     }
     
@@ -302,7 +303,7 @@ const Account = props => {
               placeholderTextColor={Color.lightGrey}
               value={password}
               onChangeText={text => setPassword(text)}
-              secureTextEntry={encryptedPass}
+              secureTextEntry={(password.length <= 0 )? false : encryptedPass}
               style={[
                 Styles1.TextInputStyle,
                 {
@@ -322,8 +323,7 @@ const Account = props => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity onPress={() => onSubmit()}>
-        <View
+      <View
           style={{
             backgroundColor: Color.primaryColor,
             borderColor: Color.golden,
@@ -333,9 +333,11 @@ const Account = props => {
             marginRight: 90,
             marginTop: 20,
           }}>
+            <TouchableOpacity onPress={() => onSubmit()}>
+        
           <Text style={Styles1.subText1}>Next</Text>
-        </View>
       </TouchableOpacity>
+        </View>
 
       <View
         style={{

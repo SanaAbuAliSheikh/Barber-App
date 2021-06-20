@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "740597293776",
-    "project_id": "barberapplication-13494",
-    "storage_bucket": "barberapplication-13494.appspot.com"
+    "project_number": "1034205850431",
+    "project_id": "barberapp-2021",
+    "storage_bucket": "barberapp-2021.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:740597293776:android:b80dca5ec29672be63f4d5",
+        "mobilesdk_app_id": "1:1034205850431:android:adf962f0e4fdae4c7e418a",
         "android_client_info": {
-          "package_name": "com.barberapp"
+          "package_name": "com.appbarber"
         }
       },
       "oauth_client": [
         {
-          "client_id": "740597293776-i6hro5tps139ks3lii6t6r1uhlohhl5a.apps.googleusercontent.com",
+          "client_id": "1034205850431-qmc9qa3bgk36ndhbf9oq1gc5u4khg243.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDdxlRGLuRk8Z4tubrIB5l1ChZ1hSEbums"
+          "current_key": "AIzaSyBN0ENHT1VOzMoV1syDOobrvwtvgDfxdjQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "740597293776-i6hro5tps139ks3lii6t6r1uhlohhl5a.apps.googleusercontent.com",
+              "client_id": "1034205850431-qmc9qa3bgk36ndhbf9oq1gc5u4khg243.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
