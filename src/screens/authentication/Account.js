@@ -41,6 +41,7 @@ const Account = props => {
   const [error, setError] = useState('');
   const [selectAvatarType, setSelectAvatarType] = useState('');
 
+
   const chooseImage = async () => {
     setSelectAvatarType(false);
 
@@ -164,17 +165,19 @@ const Account = props => {
   };
 
   const onSubmit = async () => {
-    if (validation()) {
-      await props.register_owner({
+    // if (validation()) {
+      const res = await props.register_owner({
         firstname,
         lastname,
         email,
         password,
         image: fileUri&&fileUri.data,
       });
-      setError('');
-      props.navigation.navigate('Category');
-    }
+      // setError('');
+      if(res.token != null){
+        props.navigation.navigate('Category');
+      }
+    // }
     
   };
   useEffect(async()=>{

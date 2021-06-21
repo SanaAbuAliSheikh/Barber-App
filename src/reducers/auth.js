@@ -26,7 +26,8 @@ import {
   GET_JOB_FAIL,
   GET_OWNER_SHOPS_SUCCESS,
   GET_NOTIFICATION_SUCCESS,
-  GET_APPOINTMENT_SUCCESS
+  GET_APPOINTMENT_SUCCESS,
+  GET_APPOINTMENT_FAIL
 } from '../actions/types';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios'
@@ -105,6 +106,15 @@ export default function (state = initialState, action) {
       };
   
     case GET_APPOINTMENT_SUCCESS:
+      console.log(payload,'REDUCER')
+      return {
+        ...state,
+        ...payload,
+        loading: false,
+        appointments: payload,
+      }
+    
+    case GET_APPOINTMENT_FAIL:
       return {
         ...state,
         ...payload,

@@ -11,7 +11,7 @@ import {
   Modal,
   PermissionsAndroid,
 } from 'react-native';
-import {Checkbox} from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import Styles from '../../styles/Styles';
@@ -618,15 +618,12 @@ const Employee = props => {
                       marginRight: 15,
                       alignItems: 'center',
                     }}>
-                    <Checkbox
-                      status={
-                        props.services.data[index].is_checked == true
-                          ? 'checked'
-                          : 'unchecked'
-                      }
-                      onPress={() => handleService(index)}
-                      color={Color.golden}
-                      uncheckedColor="white"
+                    <CheckBox
+                      value={props.services.data[index].is_checked == true
+                        ? true
+                        : false}
+                      tintColors={true ? 'red': 'green'}
+                      onValueChange={(val)=>{handleService(val)}}
                     />
                     <Text style={Styles1.subText5}>{service.title}</Text>
                   </View>

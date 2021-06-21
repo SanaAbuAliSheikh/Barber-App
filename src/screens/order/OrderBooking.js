@@ -20,6 +20,7 @@ import {
 import Color from '../../utils/Colors.json';
 import CalendarStrip from 'react-native-calendar-strip';
 import Icon2 from 'react-native-vector-icons/Entypo';
+import moment from 'moment'
 
 const {width, height} = Dimensions.get('window');
 
@@ -165,11 +166,12 @@ const OrderBooking = props => {
   const [statusReq, setStatusReq] = useState(false);
   const [bookingId, setBookingId] = useState('');
   const [status, setStatus] = useState('');
+  const [currentDate, setCurrentDate] = useState('')
 
   useEffect(async () => {
     await props.get_appointment();
     console.log('APPOINTMENTS', props.appointments);
-  }, []);
+  },[]);
   const renderItem = ({item}) => {
     return (
       <View
@@ -237,6 +239,11 @@ const OrderBooking = props => {
     console.log(status,bookingId);
     await props.status_appointment({bookingId,status});
   }
+
+  const onDateChange = async(val) => {
+    var newDate = moment(val).format("YYYY-MM-DD"); 
+    await props.get_appointment(newDate);
+  }
   return (
     <View style={Styles.background1}>
       <ImageBackground
@@ -262,7 +269,8 @@ const OrderBooking = props => {
             borderRadius: 40,
             padding: 10,
           }}
-          onDateSelected={() => console.log(date)}
+          onDateSelected={(date) => onDateChange(date)}
+          
         />
         <FlatList
           data={props.appointments && props.appointments.data}

@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   FlatList,
+  
 } from 'react-native';
 
 import Icon1 from 'react-native-vector-icons/AntDesign';
@@ -16,7 +17,7 @@ import Icon3 from 'react-native-vector-icons/FontAwesome';
 
 import Color from '../../utils/Colors.json';
 import Styles from '../../styles/Styles';
-import {Checkbox} from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -32,6 +33,9 @@ const Services = props => {
   const [ownerId, setOwnerId] = useState('');
   const [shopServices, setShopServices] = useState([]);
   const [services1, setServices1] = useState([]);
+
+  const [dryer, setDryer] = useState(false)
+  const [cut, setCut] = useState(false)
 
   const services = [
     {
@@ -85,7 +89,14 @@ const Services = props => {
    const {name,email,phone,address,zipCode,country,lat,long,category, type, id, images,dayTimings} = props.route.params.data; 
    console.log( images.length, ownerId, name, category, id , type, address, {location: {"type": "Point", "coordinates": [lat, long]}} , shopServices);
     await props.register_shop({ dayTimings, owner:ownerId, title:name, work_type:category, plan:id , shop_type:type, address, location: {"type": "Point", "coordinates": [long, lat]}, images, services:shopServices,country, zip_code:zipCode})
-    props.navigation.navigate('Employee Info')
+    props.navigation.navigate('Login')
+    // const no_of_shops = await AsyncStorage.getItem('no_of_shops');
+    // console.log(no_of_shops=="5");
+
+    // no_of_shops=="1" ? props.navigation.navigate('SignUp Form') : props.navigation.navigate('Category');
+    // let val = JSON.parse(no_of_shops);
+    // console.log(no_of_shops==5);
+    // AsyncStorage.setItem('no_of_shops',JSON.stringify(val-1));
   }
 
   const handleService = index => {
@@ -134,13 +145,10 @@ const Services = props => {
                 alignItems: 'center',
               }}>
               <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Checkbox
-                  status={props.services.data[index].is_checked == true
-                    ? 'checked'
-                    : 'unchecked'}
-                  onPress={() => handleService(index)}
-                  color="white"
-                  uncheckedColor="white"
+                <CheckBox
+                  value={dryer}
+                  tintColors={true ? 'red': 'green'}
+                  onValueChange={(val)=>{setDryer(val);handleService(index)}}
                 />
                 <View
                   style={{
@@ -176,13 +184,11 @@ const Services = props => {
 
                 {props.services.data[(index*2)+1]&&(
                   <>
-                <Checkbox
-                  status={props.services.data[(index*2)+1].is_checked == true
-                    ? 'checked'
-                    : 'unchecked'}
-                  onPress={() => handleService((index*2)+1)}
-                  color="white"
-                  uncheckedColor="white"
+                <CheckBox
+                  value={cut}
+                  tintColors={true ? 'white': 'transparent'}
+                  onValueChange={(val)=>{setCut(val);handleService((index*2)+1)}}
+
                 />
                 <View
                   style={{

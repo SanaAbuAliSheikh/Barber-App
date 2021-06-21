@@ -5,11 +5,11 @@ import setAuthToken from '../utils/setAuthToken'
 import { ToastAndroid } from 'react-native';
 import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS } from './types';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-simple-toast';
 
 //REGISTER OWNER
 export const register_owner = ({firstname,lastname,email,password,image}) => async dispatch => {
     const body = JSON.stringify({firstname,lastname,email,password,role:'OWNER',image})
-   console.log("body",body);
     try{
         const res = await api.post('/users/signup',body)
         console.log("hit", res.data);
@@ -17,10 +17,15 @@ export const register_owner = ({firstname,lastname,email,password,image}) => asy
             type: OWNER_SUCCESS,
             payload: res.data&&res.data
         })
+        Toast.show("Owner Registered Successfully", Toast.SHORT)
+        return res.data
         
     }catch(err){
-        console.log(err);
-        ToastAndroid.show(err, ToastAndroid.SHORT);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: OWNER_FAIL
         })
@@ -43,9 +48,15 @@ export const register_shop = ({owner,title,work_type,plan,shop_type,location,add
             type: SHOP_SUCCESS,
             payload: res.data.shop_id
         })
+
+        Toast.show("Shop Registered Successfully", Toast.SHORT)
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: SHOP_FAIL
         })
@@ -66,7 +77,11 @@ export const edit_shop = ({images}) => async dispatch => {
         dispatch(get_shop(shop));
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         
     }
 }
@@ -87,7 +102,11 @@ export const edit_shopInfo = ({shop}) => async dispatch => {
         dispatch(get_shop(shopId));
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         
     }
 }
@@ -108,7 +127,11 @@ export const edit_shopInfos = ({services}) => async dispatch => {
         dispatch(get_shop(shopId));
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         
     }
 }
@@ -128,9 +151,15 @@ export const register_employee = ({shop,name,type,phone,services}) => async disp
         })
 
         dispatch(get_shop(shop))
+
+        Toast.show("Employee Registered Successfully", Toast.SHORT)
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: EMPLOYEE_FAIL
         })
@@ -150,7 +179,11 @@ export const get_plans = () => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err.message)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: GET_PLAN_FAIL
         })
@@ -158,21 +191,40 @@ export const get_plans = () => async dispatch => {
 }
 
 //GET APPOINTMENTS
-export const get_appointment = () => async dispatch => {
+export const get_appointment = (val) => async dispatch => {
+    console.log('APPOINTMENTTT')
     const shopId = await AsyncStorage.getItem('shop_id');
     console.log("BOOKINGSSSSSSSSSS",shopId);
     try{
-        
-        const res = await api.get(`/bookings/shop/${shopId}`)
-        console.log("appointmentsss today",res.data)
+        if(val!=null){
+            const res = await api.get(`/bookings/shop/${shopId}?date=${val}`)
+            console.log("appointmentsss today",res.data)
 
-        dispatch({
-            type: GET_APPOINTMENT_SUCCESS,
-            payload: res.data
-        })
+            dispatch({
+                type: GET_APPOINTMENT_SUCCESS,
+                payload: res.data
+            })
+        }else {
+            const res = await api.get(`/bookings/shop/${shopId}`)
+            console.log("appointmentsss today",res.data)
+
+            dispatch({
+                type: GET_APPOINTMENT_SUCCESS,
+                payload: res.data
+            })
+        }
+
         
     }catch(err){
-        console.warn(err)
+        console.log('hey',err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
+        dispatch({
+            type: GET_APPOINTMENT_FAIL,
+            payload: []
+        })
        
     }
 }
@@ -191,7 +243,11 @@ export const status_appointment = ({bookingId,status}) => async dispatch => {
         dispatch(get_appointment())
         
     }catch(err){
-        console.warn(err)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
        
     }
 }
@@ -208,7 +264,11 @@ export const get_services = () => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         // ToastAndroid.show(err, ToastAndroid.SHORT)
          
         // dispatch({
@@ -230,8 +290,11 @@ export const get_shop = (shopId) => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err)
-        ToastAndroid.show(err, ToastAndroid.SHORT)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
          
         dispatch({
             type: GET_SHOP_FAIL
@@ -253,7 +316,11 @@ export const get_owner_shops = () => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         // ToastAndroid.show(err, ToastAndroid.SHORT)
          
         // dispatch({
@@ -278,12 +345,17 @@ export const login_owner = ({email, password, deviceId, deviceType}) => async di
             })
             // dispatch(loadUser())
         }
+        Toast.show("Logged In Successfully", Toast.SHORT)
         // else{
         //     ToastAndroid.show(res.error, ToastAndroid.SHORT)
         // }
         
     }catch(err){
-        console.log(err);
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: LOGIN_FAIL
         })
@@ -304,7 +376,11 @@ console.log(body);
             payload: res
         })
     }catch(err){
-        console.warn(err.message)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: FORGOT_PASS_FAIL
         })
@@ -324,7 +400,11 @@ export const verify_otp = ({resetCode}) => async dispatch => {
             payload: res
         })
     }catch(err){
-        console.warn(err.message)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: VERIFY_OTP_FAIL
         })
@@ -346,7 +426,11 @@ export const update_pass_login = ({code,newpassword,confirmpassword}) => async d
             payload: res
         })
     }catch(err){
-        console.warn(err.message)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: UPDATE_PASS_FAIL
         })
@@ -358,6 +442,7 @@ export const logout = () => dispatch => {
     dispatch({
         type : LOGOUT
     })
+    
 }
 
 //LOAD USER
@@ -375,7 +460,11 @@ export const loadUser = () => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err.message)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: AUTH_ERROR
         })
@@ -398,7 +487,11 @@ export const get_jobs = () => async dispatch => {
         })
         
     }catch(err){
-        console.warn(err)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
         dispatch({
             type: GET_JOB_FAIL
         })
@@ -416,8 +509,14 @@ export const create_jobs = ({shop,name,description,email,type, area, packages,ex
         console.log(res.data)
 
         dispatch(get_jobs());
+
+        Toast.show("Job Created Successfully", Toast.SHORT)
     }catch(err){
-        console.warn(err)
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
        
     }
 }

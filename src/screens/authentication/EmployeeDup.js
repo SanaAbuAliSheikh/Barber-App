@@ -11,7 +11,8 @@ import {
   Modal,
   PermissionsAndroid,
 } from 'react-native';
-import {Checkbox} from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
+
 import ImagePicker from 'react-native-image-crop-picker';
 
 import Styles from '../../styles/Styles';
@@ -54,6 +55,8 @@ const EmployeeDup = props => {
   const [daysData, setDaysData] = useState([{name:'Monday'},{name:'Tuesday'},{name:'Wednesday'},{name:'Thursday'},{name:'Friday'},{name:'Saturday'},{name:'Sunday'}]);
   const [toDayModal, setToDayModal] = useState(false);
   const [shopId, setShopId] = useState('');
+  const [dry, setDry] = useState(false)
+  const [checkVal, setCheckVal] = useState(false)
 
 
   const chooseImage = async () => {
@@ -169,8 +172,20 @@ const EmployeeDup = props => {
 
   }, []);
 
-  const handleService = index => {
-    props.services.data[index].is_checked = !props.services.data[index].is_checked;
+  
+  const handleService =( index, val )=> {
+    var checkedData = props.services.data[index].is_checked   
+    checkedData = !checkedData
+    // console.log(checkedData,'CHCE')
+    setCheckVal(checkedData)
+    props.services.data.map((s,i) => {
+      if(i == index){
+        s.is_checked = val
+      }
+      console.log(s.is_checked,'S', i, index)
+
+    })
+    // props.services.data[index].is_checked = !props.services.data[index].is_checked;
     setServices(services);
     const ifIdFound = expertise.indexOf(props.services.data[index]._id);
     // console.log(ifIdFound);
@@ -270,7 +285,7 @@ const EmployeeDup = props => {
     if(validation()){
       const empData = {
         shop:shopId,
-        fileUri: fileUri,
+        image: fileUri,
         name: name,
         phone: phone,
         type: type,
@@ -624,15 +639,19 @@ const EmployeeDup = props => {
                       marginRight: 15,
                       alignItems: 'center',
                     }}>
-                    <Checkbox
-                      status={
-                        props.services.data[index].is_checked == true
-                          ? 'checked'
-                          : 'unchecked'
-                      }
-                      onPress={() => handleService(index)}
-                      color={Color.golden}
-                      uncheckedColor="white"
+                    <CheckBox
+                      // status={
+                      //   props.services.data[index].is_checked == true
+                      //     ? 'checked'
+                      //     : 'unchecked'
+                      // }
+                      // onPress={() => handleService(index)}
+                      // color={Color.golden}
+                      // uncheckedColor="white"
+
+                      value={props.services.data[index].is_checked ? true : false}
+                      tintColors={true ? 'red': 'green'}
+                      onValueChange={(val)=>{handleService(index,val)}}
                     />
                     <Text style={Styles1.subText5}>{service.title}</Text>
                   </View>
