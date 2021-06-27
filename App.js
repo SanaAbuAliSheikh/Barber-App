@@ -19,6 +19,7 @@ import setAuthToken from './src/utils/setAuthToken';
 //Push Notification
 import PushNotification from "react-native-push-notification";
 import Firebase from '@react-native-firebase/app';
+import { notification_details } from './src/actions/auth';
 
 
 const App: () => Node = () => {
@@ -40,14 +41,24 @@ const App: () => Node = () => {
       setLoggedIn(false)
     }
   }
+
+  const myToken = (id,os) => {
+    console.log(id,os)
+  }
   useEffect(async()=>{
     // Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',appId:'1:740597293776:android:863c226be014b4db63f4d5'})
   //   Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',
   // appId:'1:740597293776:android:b80dca5ec29672be63f4d5'});
-    PushNotification.configure({
+    var myName = PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: function (token) {
-        console.log("TOKEN:", token);
+        // console.log("TOKEN:", token);
+        const deviceId = token.token;
+        const deviceOS = token.os
+        if(deviceId){
+          myToken(deviceId,deviceOS)
+        }
+
       },
     
       // (required) Called when a remote is received or opened, or local notification is opened
@@ -101,6 +112,8 @@ const App: () => Node = () => {
        */
       requestPermissions: true,
     });
+
+
 
     await getAsycToken();
     setTimeout(()=>{

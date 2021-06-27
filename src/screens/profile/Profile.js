@@ -55,49 +55,51 @@ const Profile = props => {
               justifyContent: 'space-between',
               marginRight: 20,
             }}>
-            <Text style={[Styles.subText4, {fontWeight: 'bold'}]}>
-              Settings
-            </Text>
-            <TouchableOpacity onPress={() => setSlideStatus(!slideStatus)}>
-              <Down
-                name={slideStatus ? 'chevron-up' : 'chevron-down'}
-                color={Color.golden}
-                size={25}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Payment')}>
+                <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Buy Plan</Text>
+              </TouchableOpacity>
           </View>
-          {slideStatus && (
-            <View
-              style={{
-                // borderColor: Color.golden,
-                // borderWidth: 2,
-                borderRadius: 20,
-                marginRight: 20,
-                paddingLeft: 50,
-                paddingRight: 50,
-                padding: 10,
-              }}>
-              {/* <View style={{flexDirection: 'row',alignItems:'center'}}>
-              <Down name="calendar" color={Color.golden} size={23} />
 
-                <Text style={Styles.subText5}>History Order Bookings</Text>
-              </View> */}
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Logout name="post" color={Color.golden} size={23} />
-                <TouchableOpacity
-                  onPress={() => props.navigation.navigate('Notification')}>
-                  <Text style={Styles.subText5}>Notifications</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <ProfileIcon name="user-edit" color={Color.golden} size={20} />
-                <TouchableOpacity
-                  onPress={() => props.navigation.navigate('Payment')}>
-                  <Text style={Styles.subText5}>Buy Payment Plan</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginRight: 20,
+            }}>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Payment')}>
+                <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Add More Shops (Only For Premium Plan)</Text>
+              </TouchableOpacity>
+          </View>
+          
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginRight: 20,
+            }}>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Packages')}>
+                <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Packages & Offers</Text>
+              </TouchableOpacity>
+          </View>
+
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginRight: 20,
+            }}>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Contact')}>
+                <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Contact Us</Text>
+              </TouchableOpacity>
+          </View>
 
           <View
             style={{
@@ -111,6 +113,7 @@ const Profile = props => {
               <Logout name="logout" color={Color.golden} size={25} />
             </TouchableOpacity>
           </View>
+          
         </View>
       </ImageBackground>
     </View>

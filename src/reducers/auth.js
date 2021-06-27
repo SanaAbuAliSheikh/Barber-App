@@ -27,7 +27,9 @@ import {
   GET_OWNER_SHOPS_SUCCESS,
   GET_NOTIFICATION_SUCCESS,
   GET_APPOINTMENT_SUCCESS,
-  GET_APPOINTMENT_FAIL
+  GET_APPOINTMENT_FAIL,
+  NOTIFICATION_DETAILS_SUCCESS,
+  NOTIFICATION_DETAILS_FAILURE
 } from '../actions/types';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios'
@@ -48,7 +50,9 @@ const initialState = {
   plans:[],
   allShops:[],
   notifications:[],
-  appointments:[]
+  appointments:[],
+  deviceId:null,
+  deviceOS:null
 };
 
 export default function (state = initialState, action) {
@@ -242,6 +246,21 @@ export default function (state = initialState, action) {
           loading: false,
           plans: null,
         };
+      case NOTIFICATION_DETAILS_SUCCESS:
+        return {
+          ...state,
+          ...payload,
+          deviceId:payload.deviceId,
+          deviceOS:payload.deviceOS
+        }
+      
+      case NOTIFICATION_DETAILS_FAILURE:
+        return {
+          ...state,
+          ...payload,
+          deviceId:null,
+          deviceOS:null
+        }
 
     default:
       return state;

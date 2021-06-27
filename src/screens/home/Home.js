@@ -22,18 +22,21 @@ import {get_shop, logout} from '../../actions/auth';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 
 const {width, height} = Dimensions.get('window');
 
 const Home = (props) => {
   const [showInfo, setShowInfo] = useState(true);
   const [showServices, setShowServices] = useState(false);
-  // const images = [
-  //   require('../../assets/images/home/photos3.jpg'),
-  //   require('../../assets/images/home/photos2.jpg'),
-  //   require('../../assets/images/home/photos1.jpg'),
-  //   require('../../assets/images/home/photos4.jpg'),
-  // ];
+  const [showAppointment, setShowAppointment] = useState(false)
   const [images, setImages] = useState(props.shopDetails?props.shopDetails.images:[])
   const [imagesIndex, setImagesIndex] = useState(0);
   const services = [
@@ -55,6 +58,29 @@ const Home = (props) => {
   ];
   const [servicesIndex, setServicesIndex] = useState(0);
   const [empIndex, setEmpIndex] = useState(0);
+
+  const data = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+        color: (opacity = 1) => Color.darkGolden, // optional
+        strokeWidth: 2 // optional
+      }
+    ],
+    legend: ["Sales"] // optional
+  };
+
+  const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: Color.darkGolden,
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => Color.whiteColor,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
 
   // const [getEmpData, setGetEmpData] = useState([
   //   {
@@ -308,15 +334,14 @@ const Home = (props) => {
         <View style={{marginTop: 10, marginBottom: 20}}>
           {/* <Text style={Styles.subText3}>Welcome</Text> */}
           <Text style={[Styles.subText8, {fontWeight: 'bold'}]}>
-            {props.shopDetails&&props.shopDetails.owner&&props.shopDetails.owner.firstname}
-            {'  '}{props.shopDetails&&props.shopDetails.owner&&props.shopDetails.owner.lastname}
+            {props.shopDetails && props.shopDetails.title}
           </Text>
         </View>
 
         <View style={{marginTop: 10, marginBottom: 20, flexDirection: 'row'}}>
           <TouchableOpacity
             onPress={() => {
-              setShowInfo(true), setShowServices(false);
+              setShowInfo(true), setShowServices(false), setShowAppointment(false);
             }}>
             <Text
               style={[
@@ -331,10 +356,10 @@ const Home = (props) => {
                   borderWidth: showInfo ? 2 : 0,
                 },
               ]}>
-              INFO
+              Shop Info
             </Text>
           </TouchableOpacity>
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               marginLeft: width * 0.22,
@@ -347,10 +372,28 @@ const Home = (props) => {
                 )
               })}
             
-          </View>
+          </View> */}
+          <View style={{margin:10}}></View>
+          <TouchableOpacity onPress={()=>{setShowAppointment(true),setShowInfo(false),setShowServices(false)}}>
+          <Text
+              style={[
+                Styles.subText6,
+                {
+                  borderBottomColor: showAppointment ? Color.golden : Color.whiteColor,
+                  borderTopColor: Color.darkgray,
+                  borderLeftColor: Color.darkgray,
+                  borderRightColor: Color.darkgray,
+                  color: showAppointment ? Color.golden : Color.whiteColor,
+                  borderWidth: showAppointment ? 2 : 0,
+                },
+              ]}>
+              Appointments
+            </Text>
+          </TouchableOpacity>
+          <View style={{margin:10}}></View>
           <TouchableOpacity
             onPress={() => {
-              setShowServices(true), setShowInfo(false);
+              setShowServices(true), setShowInfo(false), setShowAppointment(false)
             }}>
             <Text
               style={[
@@ -367,7 +410,7 @@ const Home = (props) => {
                   borderWidth: showServices ? 2 : 0,
                 },
               ]}>
-              SERVICES
+              Shop Services
             </Text>
           </TouchableOpacity>
         </View>
@@ -563,6 +606,55 @@ const Home = (props) => {
         </ScrollView>
         :<View style={{display:'flex',alignItems:'center',justifyContent:'center'}}><ActivityIndicator size="small" color={Color.golden}></ActivityIndicator></View>
       )
+      }
+
+
+      {
+        showAppointment && (
+          <ScrollView>
+            <View style={{margin:5, marginTop:30, justifyContent:'space-between'}}>
+              <Text style={[Styles.subText7,{marginBottom:10}]}>APPOINTMENTS</Text>
+            </View>
+            <View style={{marginLeft:30}}>
+            <View style={{marginTop:20}}>
+              <View>
+                <View>
+                  <Text style={{color:Color.greyColor}}>Total Earnings</Text>
+                </View>
+              <Text style={{color:Color.lightGolden1, fontSize:30}}>$200</Text>
+              </View>
+              <View>
+                <View style={{flexDirection:'row', marginTop:20}}>
+                  <Text style={{color:Color.greyColor}}>Total Appointment: </Text>
+                  <Text style={{color:Color.whiteColor}}>140</Text>
+                </View>
+              </View>
+            </View>
+            <View style={{marginTop:20}}>
+              <LineChart
+                data={data}
+                width={width}
+                height={220}
+                chartConfig={chartConfig}
+              />
+            </View>
+            <View style={{marginTop:20}}>
+              <Text style={{color:Color.whiteColor, fontWeight:'bold', fontSize:16}}>Upcoming Appointments</Text>
+              <View style={{marginTop:20}}>
+                <Text style={{color:Color.lightGolden1, fontSize:30}}>28 Booked</Text>
+                <View style={{flexDirection:'row', marginTop:5}}>
+                  <Text style={{color:Color.greyColor}}>Confirmed Appointments: </Text>
+                  <Text style={{color:Color.whiteColor}}>27</Text>
+                </View>
+                <View style={{flexDirection:'row', marginTop:5, marginBottom:5}}>
+                  <Text style={{color:Color.greyColor}}>Cancelled Appointments: </Text>
+                  <Text style={{color:Color.whiteColor}}>1</Text>
+                </View>
+              </View>
+            </View>
+            </View>
+          </ScrollView>
+        )
       }
       
       {showServices && (

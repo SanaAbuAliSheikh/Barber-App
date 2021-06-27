@@ -3,7 +3,7 @@ import api from '../utils/api';
 import {config, URL} from '../utils/Static';
 import setAuthToken from '../utils/setAuthToken'
 import { ToastAndroid } from 'react-native';
-import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS } from './types';
+import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS, NOTIFICATION_DETAILS_SUCCESS, NOTIFICATION_DETAILS_FAILURE } from './types';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 
@@ -539,6 +539,23 @@ export const get_notifications = () => async dispatch => {
     }catch(err){
         console.warn(err)
         
+    }
+}
+
+//NOTIFICATION DETAILS
+export const notification_details = (deviceId, deviceOS) => async dispatch => {
+    if(deviceId && deviceOS){
+        dispatch({
+            type:NOTIFICATION_DETAILS_SUCCESS,
+            payload:{
+                deviceId:deviceId,
+                deviceOS:deviceOS
+            }
+        })
+    }else{
+        dispatch({
+            type:NOTIFICATION_DETAILS_FAILURE
+        })
     }
 }
 

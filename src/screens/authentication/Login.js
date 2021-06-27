@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {
   View,
   Text,
@@ -21,10 +21,14 @@ import Icon2 from 'react-native-vector-icons/Entypo';
 
 import Header from '../components/Header';
 
-import {login_owner} from '../../actions/auth';
+import {login_owner,notification_details} from '../../actions/auth';
 import {connect} from 'react-redux';
 
 import { getUniqueId, getManufacturer } from 'react-native-device-info';
+
+//Push Notification
+import PushNotification from "react-native-push-notification";
+import Firebase from '@react-native-firebase/app';
 
 const {width, height} = Dimensions.get('window');
 class Login extends Component {
@@ -34,11 +38,100 @@ class Login extends Component {
       encryptedPass : true,
       email:'',
       password:'',
-      error:''
+      error:'',
+      val:''
     };
   }
 
-  // const [email, setEmail] = 
+
+  myToken = (id,os) => {
+    this.props.notification_details(id,os)   
+    this.setState({
+      val:id
+    }) 
+  }
+
+
+  componentDidMount = async() => {
+    const that = this;
+    var myName = null
+      // Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',appId:'1:740597293776:android:863c226be014b4db63f4d5'})
+  //   Firebase.initializeApp({apiKey:'AAAArG8J4tA:APA91bG9UZ8s14bRy-hgpIBJg4vSfFHobG-s_9Nm9bOY58f5tBSZOCAcNDagbmws3XXt03CVxeovz4IFRqWWgMRx8J6bJ24LZmawjXNML-QdVM3VqW3qVZC7J5M7MAHZexgL2Ob-4hsM',
+  // appId:'1:740597293776:android:b80dca5ec29672be63f4d5'});
+  PushNotification.configure({
+    // (optional) Called when Token is generated (iOS and Android)
+    onRegister: function (token) {
+      console.log("TOKEN:", token);
+      const deviceId = token.token;
+      const deviceOS = token.os
+      if(deviceId){
+        that.myToken(deviceId,deviceOS)
+      }
+
+    },
+
+    
+  
+    // (required) Called when a remote is received or opened, or local notification is opened
+    onNotification: function (notification) {
+      console.log("NOTIFICATION:", notification);
+      notification.foreground;
+      notification.userInteraction=true;
+      notification.message="New Notification";
+      notification.alert=notification.message;
+      PushNotification.localNotification(notification)
+             
+      // foreground: false, // BOOLEAN: If the notification was received in foreground or not
+      // userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+      // message: 'My Notification Message',
+      // process the notification
+  
+      // (required) Called when a remote is received or opened, or local notification is opened
+      // notification.finish(PushNotificationIOS.FetchResult.NoData);
+    },
+  
+    // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+    onAction: function (notification) {
+      console.log("ACTION:", notification.action);
+      console.log("NOTIFICATION:", notification);
+  
+      // process the action
+    },
+  
+    // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+    onRegistrationError: function(err) {
+      console.error(err.message, err);
+    },
+  
+    // IOS ONLY (optional): default: all - Permissions to register.
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true,
+    },
+  
+    // Should the initial notification be popped automatically
+    // default: true
+    popInitialNotification: true,
+  
+    /**
+     * (optional) default: true
+     * - Specified if permissions (ios) and token (android and ios) will requested or not,
+     * - if not, you must call PushNotificationsHandler.requestPermissions() later
+     * - if you are not using remote notification or do not have Firebase installed, use this:
+     *     requestPermissions: Platform.OS === 'ios'
+     */
+    requestPermissions: true,
+  });  
+  }
+
+ 
+
+
+
+
+
+
 
   validation = () => {
     const {email, password} = this.state;
@@ -58,16 +151,9 @@ class Login extends Component {
   }
 
   onSubmit = async() =>{
-
-    if(this.validation()){
-      //
-      const deviceId = getUniqueId();
-      console.log("deviceId", deviceId);
-      console.log("Platform", Platform.OS);
-
-      
+    if(this.validation()){      
       const {email, password} = this.state;
-      await this.props.login_owner({email,password,"deviceId":deviceId,"deviceType":Platform.OS})
+      await this.props.login_owner({email,password,"deviceId":this.state.val,"deviceType":Platform.OS})
       console.log("___________________________________");
       this.props.navigation.navigate('All Shops');
     }
@@ -156,4 +242,4 @@ class Login extends Component {
 // const mapStateToProps = state => ({
 //   ownerId: state.auth.ownerId
 // });
-export default connect(null, {login_owner})(Login);
+export default connect(null, {login_owner,notification_details})(Login);

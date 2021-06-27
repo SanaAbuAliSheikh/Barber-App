@@ -39,6 +39,8 @@ import shopInfoDup from '../screens/authentication/shopInfoDup';
 import DaysAndTimeDup from '../screens/authentication/DaysAndTimeDup';
 import EmployeeDup from '../screens/authentication/EmployeeDup';
 import ServicesDup from '../screens/authentication/ServicesDup';
+import Contact from '../screens/contact/Contact'
+import Packages from '../screens/packages/Packages';
 
 
 const Stack = createStackNavigator();
@@ -146,7 +148,10 @@ function Routes(props) {
               <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
 
               <Stack.Screen name="Tab Menu" component={MyTabs}></Stack.Screen>
-              <Stack.Screen name="Notification" component={Notification}></Stack.Screen> 
+              <Stack.Screen name="Notification" component={Notification}></Stack.Screen>
+              <Stack.Screen name="Contact" component={Contact}></Stack.Screen> 
+              <Stack.Screen name="Packages" component={Packages}></Stack.Screen> 
+
             </>
           ) : (
             <>

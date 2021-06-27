@@ -182,7 +182,7 @@ const Styles = StyleSheet.create({
     },
     subText4:{
         color:'white',
-        fontSize:18,
+        fontSize:16,
         textAlign:'left',
         margin:15,
         // textDecorationLine:'underline'
