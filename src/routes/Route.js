@@ -41,6 +41,8 @@ import EmployeeDup from '../screens/authentication/EmployeeDup';
 import ServicesDup from '../screens/authentication/ServicesDup';
 import Contact from '../screens/contact/Contact'
 import Packages from '../screens/packages/Packages';
+import CreatePackage from '../screens/packages/CreatePackage';
+import { CheckTime } from '../screens/authentication/CheckTime';
 
 
 const Stack = createStackNavigator();
@@ -151,6 +153,10 @@ function Routes(props) {
               <Stack.Screen name="Notification" component={Notification}></Stack.Screen>
               <Stack.Screen name="Contact" component={Contact}></Stack.Screen> 
               <Stack.Screen name="Packages" component={Packages}></Stack.Screen> 
+              <Stack.Screen name="CreatePackage" component={CreatePackage}></Stack.Screen> 
+              {/* <Stack.Screen name="CheckTime" component={CheckTime}></Stack.Screen>  */}
+
+
 
             </>
           ) : (

@@ -23,7 +23,7 @@ const Profile = props => {
   const handleLogout = async () => {
     console.log('logouttttttttt');
     await props.logout();
-    props.navigation.navigate('SignUp Form');
+    props.navigation.navigate('Login');
     // const isLoggedIn = await AsyncStorage.getItem('token');
 
     // !isLoggedIn&&props.navigation.navigate('SignUp Form')

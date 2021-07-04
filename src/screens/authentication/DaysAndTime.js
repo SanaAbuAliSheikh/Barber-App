@@ -27,7 +27,7 @@ const DaysAndTime = props => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [date1, setDate2] = useState(new Date(1598051730000));
 
-  const [mode, setMode] = useState('date');
+  const [mode, setMode] = useState('time');
   const [show, setShow] = useState(false);
   const [index, setIndex] = useState(0);
   const [from, setFrom] = useState(false);
@@ -35,48 +35,52 @@ const DaysAndTime = props => {
 
 
   const onChange = (event, selectedDate) => {
-    
+    console.log(selectedDate,'DATE')
     setShow(false);
     const currentDate = selectedDate || date;
     setDate(currentDate);
+
+    let newDate = new Date(currentDate)
+    console.log(newDate.getHours())
+    
     
     console.log(currentDate, index);
     let day = daysDataInOrderOther[index].day;
     let from1 = daysDataInOrderOther[index].from;
     let to1 = daysDataInOrderOther[index].to;
-    console.log(day, from1, to1);
+    console.log(to1,'OnChange');
     if(from){
       if(from1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:""}
+        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:""}
 
       } 
       if(!from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:to1}
+        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:to1}
 
       }
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:to1}
+        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:to1}
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:currentDate,to:""}
+        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:""}
 
       }
     }
 
     if(to){
       if(to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:"",to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
 
       } 
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
       }
       if(from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
 
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:currentDate}
+        daysDataInOrderOther[index]= {day:day,from:"",to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
 
       }
     }

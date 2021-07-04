@@ -20,8 +20,8 @@ import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import Icon3 from 'react-native-vector-icons/FontAwesome';
 
-import {get_jobs, create_jobs} from '../../actions/auth';
-import {connect} from 'react-redux';
+import {get_jobs, create_jobs, contact} from '../../actions/auth';
+import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -29,9 +29,28 @@ const {width, height} = Dimensions.get('window');
 
 
 const Contact = (props) => {
+    const dispatch = useDispatch()
+    const shopData = useSelector(state=>state.auth.shop)
     const [name,setName] = useState(null)
     const [email,setEmail] = useState(null)
     const [msg, setMsg] = useState(null)
+    const [userMsg, setUserMsg] = useState(null)
+
+    const onSubmit = async() => {
+      const data = {
+        name:name,
+        email:email,
+        message:msg
+      }
+      const res = await dispatch(contact(data))
+      if(res){
+        console.log(res)
+        setUserMsg(res.message)
+        setName(null)
+        setEmail(null)
+        setMsg(null)
+      }
+    }
 
     return (
         <View style={Styles.background1}>
@@ -58,11 +77,11 @@ const Contact = (props) => {
                 style={{marginTop: 22}}></Icon>
               <TextInput
                 placeholder="Enter Name"
-                placeholderTextColor={email?Color.whiteColor:Color.lightGrey}
-                value={email}
+                placeholderTextColor={name?Color.whiteColor:Color.lightGrey}
+                value={name}
                 onChangeText={(text)=>setName(text)}
                 style={[Styles1.TextInputStyle,{
-                  borderBottomColor: email
+                  borderBottomColor: name
                     ? Color.whiteColor
                     : Color.lightGrey,
                 }]}
@@ -96,13 +115,13 @@ const Contact = (props) => {
                 style={{marginTop: 22}}></Icon1>
               <TextInput
                 placeholder="Enter Message"
-                placeholderTextColor={email?Color.whiteColor:Color.lightGrey}
-                value={email}
+                placeholderTextColor={msg?Color.whiteColor:Color.lightGrey}
+                value={msg}
                 multiline={true}
                 numberOfLines={4}
                 onChangeText={(text)=>setMsg(text)}
                 style={[Styles1.TextInputStyle,{
-                  borderBottomColor: email
+                  borderBottomColor: msg
                     ? Color.whiteColor
                     : Color.lightGrey,
                 }]}
@@ -110,10 +129,19 @@ const Contact = (props) => {
                 </TextInput>
             </View>
 
+            <View>
+              {
+                userMsg && (
+                  <Text style={{color:Color.whiteColor, textAlign:'center'}}>{userMsg}</Text>
+                )
+              }
+            </View>
+
             <View
               style={Styles.button}>
-                <TouchableOpacity>
-              <Text style={Styles1.subText1}>Submit</Text></TouchableOpacity>
+              <TouchableOpacity onPress={()=>onSubmit()}>
+                <Text style={Styles1.subText1}>Submit</Text>
+              </TouchableOpacity>
             </View>
             </View>
         </View>

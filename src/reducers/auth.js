@@ -29,7 +29,11 @@ import {
   GET_APPOINTMENT_SUCCESS,
   GET_APPOINTMENT_FAIL,
   NOTIFICATION_DETAILS_SUCCESS,
-  NOTIFICATION_DETAILS_FAILURE
+  NOTIFICATION_DETAILS_FAILURE,
+  CREATE_PACKAGE,
+  GET_PACKAGE,
+  CONTACT,
+  DELETE_PACKAGE
 } from '../actions/types';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios'
@@ -49,6 +53,7 @@ const initialState = {
   jobs:[],
   plans:[],
   allShops:[],
+  packages:[],
   notifications:[],
   appointments:[],
   deviceId:null,
@@ -260,6 +265,31 @@ export default function (state = initialState, action) {
           ...payload,
           deviceId:null,
           deviceOS:null
+        }
+      case CREATE_PACKAGE:
+        return {
+          ...state,
+          ...payload,
+          loading:false
+        }
+      case GET_PACKAGE:
+        return {
+          ...state,
+          ...payload,
+          packages:payload.data,
+          loading:false
+        }
+      case DELETE_PACKAGE:
+        return {
+          ...state,
+          ...payload,
+          loading:false
+        }
+      case CONTACT:
+        return {
+          ...state,
+          ...payload,
+          loading:false
         }
 
     default:

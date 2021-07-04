@@ -3,7 +3,7 @@ import api from '../utils/api';
 import {config, URL} from '../utils/Static';
 import setAuthToken from '../utils/setAuthToken'
 import { ToastAndroid } from 'react-native';
-import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS, NOTIFICATION_DETAILS_SUCCESS, NOTIFICATION_DETAILS_FAILURE } from './types';
+import { OWNER_SUCCESS, OWNER_FAIL, SHOP_SUCCESS, SHOP_FAIL, EMPLOYEE_SUCCESS, EMPLOYEE_FAIL, GET_PLAN_SUCCESS, GET_PLAN_FAIL, GET_SERVICE_SUCCESS, GET_SERVICE_FAIL, LOGOUT, LOGIN_SUCCESS, LOGIN_FAIL, FORGOT_PASS_SUCCESS, FORGOT_PASS_FAIL, VERIFY_OTP_SUCCESS, VERIFY_OTP_FAIL, UPDATE_PASS_SUCCESS, UPDATE_PASS_FAIL, AUTH_LOADED, AUTH_ERROR, GET_JOB_SUCCESS, GET_JOB_FAIL, GET_SHOP_SUCCESS, GET_SHOP_FAIL, GET_APPOINTMENT_SUCCESS, GET_APPOINTMENT_FAIL, GET_OWNER_SHOPS_SUCCESS, GET_OWNER_SHOPS_FAIL, GET_NOTIFICATION_SUCCESS, NOTIFICATION_DETAILS_SUCCESS, NOTIFICATION_DETAILS_FAILURE, CREATE_PACKAGE, GET_PACKAGE, CONTACT, DELETE_PACKAGE } from './types';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 
@@ -33,12 +33,12 @@ export const register_owner = ({firstname,lastname,email,password,image}) => asy
 }
 
 //REGISTER SHOP
-export const register_shop = ({owner,title,work_type,plan,shop_type,location,address,images,services,country,zip_code}) => async dispatch => {
+export const register_shop = ({daysTimings,owner,title,work_type,plan,shop_type,location,address,images,services,country,zip_code}) => async dispatch => {
     
     
     const a= await AsyncStorage.getItem('owner-token');
     console.log(api.defaults.headers.common['Authorization']);
-    const body = JSON.stringify({owner,title,work_type,plan:"607a61a195aa091540cd1d3d",shop_type,location,from:'9:00am',to:'6:00pm',address,services,images,no_of_employees:"10",country,zip_code})
+    const body = JSON.stringify({daysTimings,owner,title,work_type,plan:plan,shop_type,location,from:'9:00am',to:'6:00pm',address,services,images,no_of_employees:"10",country,zip_code})
     console.log(body);
     try{
         const res = await api.post('/shops',body)
@@ -65,13 +65,12 @@ export const register_shop = ({owner,title,work_type,plan,shop_type,location,add
 
 //EDIT SHOP
 export const edit_shop = ({images}) => async dispatch => {
-
+    console.log('IMAGESS')
     const shop = await AsyncStorage.getItem('shop_id');
     const body = JSON.stringify({images})
-    console.log(body);
     console.log(`shops/edit/${shop}`);
     try{
-        const res = await api.get(`/shops/edit/${shop}`,{images})
+        const res = await api.post(`/shops/edit/${shop}`,{images})
         console.log("resp",res.data);
 
         dispatch(get_shop(shop));
@@ -113,6 +112,7 @@ export const edit_shopInfo = ({shop}) => async dispatch => {
 
 //EDIT SHOP Info
 export const edit_shopInfos = ({services}) => async dispatch => {
+    console.log(services)
 
     const shopId = await AsyncStorage.getItem('shop_id');
     // let shops = shop.shop;
@@ -262,6 +262,8 @@ export const get_services = () => async dispatch => {
             type: GET_SERVICE_SUCCESS,
             payload: res.data
         })
+
+        return res.data
         
     }catch(err){
         console.log( err.response.data)
@@ -556,6 +558,89 @@ export const notification_details = (deviceId, deviceOS) => async dispatch => {
         dispatch({
             type:NOTIFICATION_DETAILS_FAILURE
         })
+    }
+}
+
+
+
+//CREATE PACKAGES
+export const create_package = (data) => async dispatch => {
+    try{
+        const res = await api.post('/packages/create',data)
+        dispatch({
+            type:CREATE_PACKAGE,
+            payload:res.data
+        })
+        dispatch(get_package(data.shop))
+        Toast.show("Package Created Successfully", Toast.SHORT)
+        return res.data
+    }catch(err){
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
+    }
+}
+
+//GET PACKAGES
+export const get_package = (id) => async dispatch => {
+    try{
+        const data = {
+            shop:id
+        }
+        const res = await api.post('/packages',data)
+        dispatch({
+            type:GET_PACKAGE,
+            payload:res.data
+        })
+        return res.data
+    }catch(err){
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
+    }
+}
+
+
+//DELETE PACKAGE
+export const delete_package = (id,shopId) => async dispatch => {
+    try{
+        const res = await api.post(`/packages/delete/${id}`)
+        dispatch({
+            type:DELETE_PACKAGE,
+            payload:res.data
+        })
+        Toast.show("Package Deleted Successfully", Toast.SHORT)
+        dispatch(get_package(shopId))
+        return res.data
+    }catch(err){
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
+    }
+}
+
+export const contact = (data) => async dispatch => {
+    try{
+        const res = await api.post('/contact',data)
+        dispatch({
+            type:CONTACT,
+            payload:res.data
+        })
+        Toast.show("Response Sent Successfully", Toast.SHORT)
+        return res.data
+
+    }catch(err){
+        console.log( err.response.data)
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error => Toast.show(JSON.stringify(error.msg), Toast.SHORT))
+        } 
     }
 }
 

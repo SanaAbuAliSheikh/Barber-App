@@ -39,7 +39,7 @@ const ImagesDup = (props) => {
     const [images,setImages] = useState([]);
 
     const onSubmit = async() => {
-
+        console.log(images,'IMAGES')
         await props.edit_shop({images});
         props.navigation.navigate("Home");
         

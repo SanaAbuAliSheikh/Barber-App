@@ -307,9 +307,10 @@ const Home = (props) => {
     const shopId = await AsyncStorage.getItem('shop_id');
     await props.get_shop(shopId)
     
-    await console.log('shop details',props.shopDetails);
 
   },[])
+  console.log('shop details',props.shopDetails);
+
   return (
     <View style={Styles.background1}>
       <View
@@ -512,14 +513,21 @@ const Home = (props) => {
                   <View
                     style={{
                       backgroundColor: Color.primaryColor,
-                      height: 150,
+                      height: 100,
                       width: '45%',
-                      margin: 10,
                     }}>
-                    <Image
-                      source={{uri:props.shopDetails&&props.shopDetails.images[imagesIndex]}}
-                      style={{height: 150, width: '100%'}}
-                    />
+                      {
+                        props.shopDetails && props.shopDetails.images.map(s => (
+                          <Image
+                            source={{uri:s}}
+                            style={{height: 50, width: '100%'}}
+                          />
+                          ))
+                      }
+                          {/* <Image
+                            source={{uri:props.shopDetails && props.shopDetails.images[0]}}
+                            style={{height: '100%', width: '100%'}}
+                          /> */}
                   </View>
                   <View
                     style={{

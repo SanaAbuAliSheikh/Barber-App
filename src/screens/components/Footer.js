@@ -26,7 +26,7 @@ const {width, height} = Dimensions.get('window');
 const Footer = props => {
   const redirect = props.redirect;
   const navigation = useNavigation();
-  console.log("_______________________",props);
+  // console.log("_______________________",props);
   return (
       <TouchableOpacity
         // onPress={() =>  props.submit ? props.submitValue ? navigation.navigate(redirect) : null : null}

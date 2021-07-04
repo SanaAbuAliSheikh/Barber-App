@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -54,7 +54,6 @@ const Images = (props) => {
         setImages(base64Arr);
         });
     }
-
     const renderItem = ({item}) =>{
         return(
             <View style={{flex:1,alignItems:'center'}}>
@@ -63,6 +62,10 @@ const Images = (props) => {
             </View>
         );
     }
+
+    useEffect(() => {
+        console.log(daysWiseTime,'DAYS TIMINGSSSS')
+    }, [])
 
     return (
         <View style={Styles.background}>
@@ -86,7 +89,7 @@ const Images = (props) => {
                     ):null
                 }
             </View>
-            <Footer redirect="Services" data={{images,name,email,phone,address,zipCode,country,lat,long,category, type, id,"dayTimings":daysWiseTime}}/>
+            <Footer redirect="Services" data={{images,name,email,phone,address,zipCode,country,lat,long,category, type, id,"daysTimings":daysWiseTime}}/>
 
         </View>
     )
