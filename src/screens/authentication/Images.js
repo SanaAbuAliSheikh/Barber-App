@@ -58,7 +58,7 @@ const Images = (props) => {
         return(
             <View style={{flex:1,alignItems:'center'}}>
                 <Text>{item}</Text>
-                <Image source={{uri: item}} style={{height:200, width:'47%'}}/>
+                <Image source={{uri: item}} style={{height:400, width:400, aspectRatio:1, resizeMode:'contain'}}/>
             </View>
         );
     }

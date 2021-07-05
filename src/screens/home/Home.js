@@ -103,11 +103,12 @@ const Home = (props) => {
   //   },
   // ]);
   const [getEmpData, setGetEmpData] = useState(props.shopDetails?props.shopDetails.employees:[]);
-  const [getEmpDataCopy, setGetEmpDataCopy] = useState(getEmpData);
+  const [getEmpDataCopy, setGetEmpDataCopy] = useState(props.shopDetails?props.shopDetails.employees:[]);
   const [shop, setShop] = useState('');
 
   const searchEmp = value => {
     console.log(value.length);
+    console.log(getEmpDataCopy)
     if (value.length > 0) {
       const filteredEmp = getEmpDataCopy.filter(emp => {
         let empLowerCase = emp.name.toLowerCase();
@@ -115,11 +116,15 @@ const Home = (props) => {
 
         return empLowerCase.indexOf(searchTermLowerCase) > -1;
       });
+      console.log(filteredEmp,'HSHS')
       setGetEmpData(filteredEmp);
+    }else{
+      return setGetEmpData(props.shopDetails.employees)
     }
   };
 
   const renderItem = ({item}) => {
+    console.log(item.image,'FLATLIST')
     return (
       <View>
         <View
@@ -133,26 +138,29 @@ const Home = (props) => {
           {/* <Text style={[Styles.subText7, {color: Color.golden}]}>SAVE</Text> */}
           {/* <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text> */}
         </View>
-        {props.shopDetails&&props.shopDetails.employees&&(
         <View
           style={{
             backgroundColor: Color.primaryColor,
             margin: 10,
-            borderRadius: 20,
             padding: 20,
             borderColor: Color.golden,
             borderWidth: 1,
+            
           }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row'}}>
             <View
               style={{
                 width: 70,
                 height: 70,
                 backgroundColor: Color.darkgray,
                 borderRadius: 35,
-              }}></View>
-            <View>
-              <Text style={Styles.subText7}>{props.shopDetails&&props.shopDetails.employees[empIndex].name}</Text>
+                justifyContent:'center'
+
+              }}>
+                <Image source={{uri:item.image}} style={{height:50, width:50, alignSelf:'center', borderRadius:35}}/>
+              </View>
+            <View style={{margin:10}}>
+              <Text style={Styles.subText7}>{item.name}</Text>
               <Text
                 style={[
                   Styles.subText9,
@@ -160,84 +168,42 @@ const Home = (props) => {
                 ]}>
                 Expertise : {props.shopDetails&&props.shopDetails.employees[empIndex].type}
               </Text>
-              <Text
+              {/* {
+                props.shopDetails && props.shopDetails.daysTimings && props.shopDetails.daysTimings.map(s => (
+                  <Text style={[
+                    Styles.subText9,
+                    {marginTop: 10, color: Color.greyColor},
+                  ]}>{s.day} - <Text style={[
+                    Styles.subText9,
+                    {marginTop: 10, color: Color.greyColor},
+                  ]}>{s.from} - <Text style={[
+                    Styles.subText9,
+                    {marginTop: 10, color: Color.greyColor},
+                  ]}>{s.to}</Text></Text></Text>
+                ))
+              } */}
+              {/* <Text
                 style={[
                   Styles.subText9,
                   {marginTop: 10, color: Color.greyColor},
                 ]}>
                 Availability : Mon - Sat
-              </Text>
-              <Text
+              </Text> */}
+              {/* <Text
                 style={[
                   Styles.subText9,
                   {marginTop: 10, color: Color.greyColor},
                 ]}>
                 Shift Timings : 9:00am - 6:00pm
-              </Text>
+              </Text> */}
             </View>
           </View>
         </View>
-        )}
-        {props.shopDetails&&props.shopDetails.employees[empIndex + 1] && (
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginLeft: 5,
-                marginRight: 5,
-                marginTop: 20,
-                justifyContent: 'flex-end',
-              }}>
-              {/* <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text> */}
-            </View>
-            <View
-              style={{
-                backgroundColor: Color.primaryColor,
-                margin: 10,
-                borderRadius: 20,
-                padding: 20,
-                borderColor: Color.golden,
-                borderWidth: 1,
-              }}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <View
-                  style={{
-                    width: 70,
-                    height: 70,
-                    backgroundColor: Color.darkgray,
-                    borderRadius: 35,
-                  }}></View>
-                <View>
-                  <Text style={Styles.subText7}>
-                    {props.shopDetails&&props.shopDetails.employees[empIndex + 1].name}
-                  </Text>
-                  <Text
-                    style={[
-                      Styles.subText9,
-                      {marginTop: 10, color: Color.greyColor},
-                    ]}>
-                    Expertise : {props.shopDetails&&props.shopDetails.employees[empIndex + 1].type}
-                  </Text>
-                  <Text
-                    style={[
-                      Styles.subText9,
-                      {marginTop: 10, color: Color.greyColor},
-                    ]}>
-                    Availability : Mon - Sat
-                  </Text>
-                  <Text
-                    style={[
-                      Styles.subText9,
-                      {marginTop: 10, color: Color.greyColor},
-                    ]}>
-                    Shift Timings : 9:00am to 6:00pm
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+
+        <View>
+          
+        </View>
+
 
         {/* {props.shopDetails&&props.shopDetails.employees[empIndex + 2] && (
           <View>
@@ -447,45 +413,29 @@ const Home = (props) => {
                 <ImageBackground
                   source={require('../../assets/images/home/map12.jpg')}
                   style={{width: width, height: height * 0.25, opacity: 0.7}}>
-                  <Text
-                    style={[
-                      Styles.subText7,
-                      {
-                        paddingTop: 20,
-                        paddingLeft: 10,
-                        paddingRight: 20,
-                        paddingBottom: 5,
-                      },
-                    ]}>
-                    {props.shopDetails.title}
-                  </Text>
-                  <Text
-                    style={[
-                      Styles.subText9,
-                      {paddingLeft: 20, paddingRight: 10, width: '50%'},
-                    ]}>
-                    {props.shopDetails.address}
-                  </Text>
-
-                  <Text
-                    style={[
-                      Styles.subText7,
-                      {
-                        paddingTop: 30,
-                        paddingLeft: 10,
-                        paddingRight: 20,
-                        paddingBottom: 5,
-                      },
-                    ]}>
-                    Monday - Saturday
-                  </Text>
-                  <Text
-                    style={[
-                      Styles.subText9,
-                      {paddingLeft: 20, paddingRight: 10, width: '50%'},
-                    ]}>
-                    {props.shopDetails.from} - {props.shopDetails.to}
-                  </Text>
+                  <View>
+                    <Text
+                      style={[
+                        Styles.subText7,
+                        {paddingRight: 10, color:Color.whiteColor},
+                      ]}>
+                      <Text>Address:</Text> {props.shopDetails.address}
+                    </Text>
+                  </View>
+                  {
+                    props.shopDetails && props.shopDetails.daysTimings && props.shopDetails.daysTimings.map(s => (
+                      <Text style={[
+                        Styles.subText7,
+                        {marginTop: 10, color: Color.whiteColor},
+                      ]}>{s.day} - <Text style={[
+                        Styles.subText7,
+                        {marginTop: 10, color: Color.whiteColor},
+                      ]}>{s.from} - <Text style={[
+                        Styles.subText7,
+                        {marginTop: 10, color: Color.whiteColor},
+                      ]}>{s.to}</Text></Text></Text>
+                    ))
+                  }
                 </ImageBackground>
               </View>
 
@@ -508,28 +458,58 @@ const Home = (props) => {
                 </TouchableOpacity>
               </View>
 
-              <View style={{backgroundColor: Color.darkgray}}>
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                  <View
-                    style={{
-                      backgroundColor: Color.primaryColor,
-                      height: 100,
-                      width: '45%',
-                    }}>
-                      {
-                        props.shopDetails && props.shopDetails.images.map(s => (
-                          <Image
-                            source={{uri:s}}
-                            style={{height: 50, width: '100%'}}
-                          />
-                          ))
-                      }
-                          {/* <Image
-                            source={{uri:props.shopDetails && props.shopDetails.images[0]}}
-                            style={{height: '100%', width: '100%'}}
-                          /> */}
-                  </View>
-                  <View
+              <View>
+                <View>
+                  {
+                    props.shopDetails && props.shopDetails.images.length > 0 ? 
+                    (
+                      <View>
+                        <View>
+                            {/* {
+                              props.shopDetails && <FlatList
+                                  horizontal={true} 
+                                  showsHorizontalScrollIndicator={false} 
+                                  data={props.shopDetails.images && props.shopDetails.images}
+                                  renderItem={ ({ item }) => (
+                                    
+                                    <Image source={{uri:item}}
+            
+                                      style={{
+                                        borderWidth:2,
+                                        borderColor:'#d35647',
+                                        resizeMode:'contain',
+                                        margin:8
+                                      }}
+                                    />
+                                  )}
+                                />
+                                
+                                    })
+                             */}
+                             {
+                                <FlatList
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={true} 
+                                initialNumToRender={10}
+                                indicatorStyle='white'
+                                data={props.shopDetails.images}
+                                renderItem={({item}) => (
+                                  <>
+                                  <View style={{borderColor:Color.darkGolden, borderWidth:1, margin:10}}>
+                                    <Image source={{uri:item}} style={{height:200, width:200, aspectRatio:1, resizeMode:'center', margin:10}}/>
+                                  </View>
+                                  </>
+                                )}
+                               />
+
+                             }
+                        </View>
+                      </View>
+                    ) : (
+                      <Text style={{color:Color.whiteColor, margin:20}}>No Images Found</Text>
+                    )
+                  }
+                  {/* <View
                     style={{
                       backgroundColor: Color.primaryColor,
                       height: 150,
@@ -540,11 +520,11 @@ const Home = (props) => {
                       source={{uri:props.shopDetails&&props.shopDetails.images[imagesIndex + 1]}}
                       style={{height: 150, width: '100%'}}
                     />
-                  </View>
+                  </View> */}
                 </View>
               </View>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   setImagesIndex(
                     imagesIndex + 2 >= props.shopDetails.images.length ? 0 : imagesIndex + 2,
@@ -553,7 +533,7 @@ const Home = (props) => {
                 <View style={{alignItems: 'center', margin: 20}}>
                   <Icon1 name="plussquare" color={Color.darkGolden} size={40} />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View
                 style={{
@@ -565,7 +545,7 @@ const Home = (props) => {
                 }}>
                 <Text style={[Styles.subText7]}>EMPLOYEES</Text>
                 <TouchableOpacity onPress={()=>props.navigation.navigate('Employee Info Dup')}>
-                <Text style={[Styles.subText7, {color: Color.golden}]}>EDIT</Text></TouchableOpacity>
+                <Text style={[Styles.subText7, {color: Color.golden}]}>ADD</Text></TouchableOpacity>
               </View>
               <View
                 style={{
@@ -591,7 +571,11 @@ const Home = (props) => {
               {
                props.shopDetails&&props.shopDetails.employees.length>0&& 
                <FlatList
-                data={[props.shopDetails&&props.shopDetails.employees[empIndex]]}
+                horizontal={true}
+                showsHorizontalScrollIndicator={true} 
+                initialNumToRender={10}
+                indicatorStyle='white'
+                data={getEmpData}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
               />
@@ -599,7 +583,7 @@ const Home = (props) => {
               
 
               
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   { props.shopDetails&&
                    ( empIndex + 2 >= props.shopDetails.employees.length ? setEmpIndex(0) : setEmpIndex(empIndex + 2)
@@ -607,7 +591,7 @@ const Home = (props) => {
                 <View style={{alignItems: 'center', margin: 20}}>
                   <Icon1 name="plussquare" color={Color.darkGolden} size={40} />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             
             </>
           

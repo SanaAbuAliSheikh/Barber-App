@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   Dimensions,
   ImageBackground,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import Styles from '../../styles/Styles';
 import Color from '../../utils/Colors.json';
@@ -19,15 +20,57 @@ const {width, height} = Dimensions.get('window');
 
 const Profile = props => {
   const [slideStatus, setSlideStatus] = useState(false);
+  const [planDate, setPlanDate] = useState(null)
 
   const handleLogout = async () => {
     console.log('logouttttttttt');
     await props.logout();
-    props.navigation.navigate('Login');
     // const isLoggedIn = await AsyncStorage.getItem('token');
 
     // !isLoggedIn&&props.navigation.navigate('SignUp Form')
   };
+
+  useEffect(() => {
+    const date1 = new Date(props.shopDetails.createdAt)
+    const date2 = new Date()
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    const days = 7- diffDays
+    setPlanDate(days)
+
+  },[])
+
+
+  const checkPlan = () => {
+    if(props.shopDetails.owner.title == 'Premium'){
+      Alert.alert(
+        "Please Subscribe To Any Package",
+        "Contact Us For More Information",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
+    }else{
+      Alert.alert(
+        "You Currently Have Gold Package",
+        "Contact Us For More Information",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
+    }
+  }
+
   return (
     <View style={Styles.background1}>
       <ImageBackground
@@ -55,9 +98,21 @@ const Profile = props => {
               justifyContent: 'space-between',
               marginRight: 20,
             }}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => props.navigation.navigate('Payment')}>
                 <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Buy Plan</Text>
+              </TouchableOpacity> */}
+          </View>
+          
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginRight: 20,
+              alignSelf:'center'
+            }}>
+              <TouchableOpacity>
+                <Text style={[Styles.subText4, {fontWeight:'bold', textAlign:'center'}]}>TRIAL PERIOD({planDate} DAYS LEFT)</Text>
               </TouchableOpacity>
           </View>
 
@@ -69,7 +124,7 @@ const Profile = props => {
               marginRight: 20,
             }}>
               <TouchableOpacity
-                onPress={() => props.navigation.navigate('Payment')}>
+                onPress={() => checkPlan()}>
                 <Text style={[Styles.subText4, {fontWeight:'bold'}]}>Add More Shops (Only For Premium Plan)</Text>
               </TouchableOpacity>
           </View>
@@ -120,4 +175,8 @@ const Profile = props => {
   );
 };
 
-export default connect(null, {logout})(Profile);
+const mapStateToProps = state => ({
+  shopDetails: state.auth.shop
+});
+
+export default connect(mapStateToProps, {logout})(Profile);
