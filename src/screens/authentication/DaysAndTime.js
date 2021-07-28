@@ -19,12 +19,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
+import moment from 'moment'
 
 const {width, height} = Dimensions.get('window');
 
 const DaysAndTime = props => {
 
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [date1, setDate2] = useState(new Date(1598051730000));
 
   const [mode, setMode] = useState('time');
@@ -35,52 +36,57 @@ const DaysAndTime = props => {
 
 
   const onChange = (event, selectedDate) => {
-    console.log(selectedDate,'DATE')
+
+
+    console.log(selectedDate,'SELECTED')
     setShow(false);
     const currentDate = selectedDate || date;
     setDate(currentDate);
 
+    console.log(currentDate,'CURRENT')
+
     let newDate = new Date(currentDate)
-    console.log(newDate.getHours())
-    
+    console.log(newDate,'New Date')
+    var a = moment(newDate, "YYYY-MM-DDTHH:mm:ss Z").format('HH:mma');
+ 
     
     console.log(currentDate, index);
     let day = daysDataInOrderOther[index].day;
     let from1 = daysDataInOrderOther[index].from;
     let to1 = daysDataInOrderOther[index].to;
-    console.log(to1,'OnChange');
+
     if(from){
       if(from1){
-        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:""}
+        daysDataInOrderOther[index]= {day:day,from:a,to:""}
 
       } 
       if(!from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:to1}
+        daysDataInOrderOther[index]= {day:day,from:a,to:to1}
 
       }
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:to1}
+        daysDataInOrderOther[index]= {day:day,from:a,to:to1}
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),to:""}
+        daysDataInOrderOther[index]= {day:day,from:a,to:""}
 
       }
     }
 
     if(to){
       if(to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        daysDataInOrderOther[index]= {day:day,from:"",to:a}
 
       } 
       if(from1&&to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:a}
       }
       if(from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:from1,to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        daysDataInOrderOther[index]= {day:day,from:from1,to:a}
 
       }
       if(!from1&&!to1){
-        daysDataInOrderOther[index]= {day:day,from:"",to:newDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        daysDataInOrderOther[index]= {day:day,from:"",to:a}
 
       }
     }
@@ -116,6 +122,8 @@ const DaysAndTime = props => {
 
   useEffect(() => {
     const {fromDay, toDay} = props.route.params.data;
+    // const fromDay = 'Monday'
+    // const toDay = 'Wednesday'
     console.log(fromDay, toDay);
     const fromDayIndex = daysData.indexOf(fromDay);
     const toDayIndex = daysData.indexOf(toDay);
